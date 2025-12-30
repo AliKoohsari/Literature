@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مجموعه شعر</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Vazir', 'B Nazanin', 'Tahoma', sans-serif;
+      text-align: right;
+      line-height: 2;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      font-size: 16px;
+      font-weight: 300;
+    }
+    h1, h3 {
+      font-family: 'Vazir', 'B Nazanin', sans-serif;
+      font-weight: 400;
+    }
+    #search-container {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #search-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1.1em;
+      font-family: 'Vazir', sans-serif;
+      font-weight: 300;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
+    }
+    #search-input:focus {
+      outline: none;
+      border-color: #007cba;
+    }
+    #index-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .ghazal-list, .search-results {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .ghazal-item, .search-item {
+      cursor: pointer;
+      padding: 12px 15px;
+      margin: 8px 0;
+      border-radius: 6px;
+      transition: all 0.3s;
+      font-size: 1.1em;
+      font-weight: 300;
+      border-right: 4px solid transparent;
+    }
+    .ghazal-item:hover, .search-item:hover {
+      background: #f0f8ff;
+      border-right-color: #007cba;
+      transform: translateX(-5px);
+    }
+    .search-item.highlight {
+      background: #e3f2fd;
+      border-right-color: #007cba;
+    }
+    .no-results {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+      padding: 20px;
+    }
+    .poem {
+      margin: 20px 0;
+      padding: 15px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .poem.active { display: block; }
+    .verse {
+      cursor: pointer;
+      padding: 8px 5px;
+      margin: 8px 0 0 0;
+      transition: background 0.3s;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0;
+      font-size: 1.1em;
+      font-weight: bold;
+      width: 100%;
+    }
+    .verse:hover {
+      background: #f0f8ff;
+      border-radius: 4px;
+    }
+    .verse span {
+      flex: none;
+      width: 46%;
+      font-weight: bold;
+      text-align: justify;
+      direction: rtl;
+      line-height: 1.4;
+      padding: 0 0.5em;
+      box-sizing: border-box;
+    }
+    .verse span:first-child { 
+      text-align: right; 
+      margin-right: 0;
+    }
+    .verse span:last-child { 
+      text-align: left; 
+      margin-left: 0;
+    }
+    .comment {
+      display: none;
+      margin: 0 0 8px 20px;
+      padding: 2px 0;
+      font-size: 0.9em;
+      color: #888;
+      font-weight: normal;
+    }
+	
+    .back-btn {
+      background: transparent;
+      color: #2563eb;
+      border: 2px solid transparent;
+      padding: 10px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-bottom: 30px;
+      font-size: 0.95em;
+      font-weight: 500;
+      font-family: 'Vazir', sans-serif;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .back-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .back-btn:active {
+      transform: translateY(-1px);
+    }
+    
+    .loading { 
+      text-align: center; 
+      color: #666; 
+      font-style: italic;
+      font-weight: 300;
+    }
+    @media (max-width: 600px) {
+      body { padding: 10px; font-size: 14px; }
+      .verse { flex-direction: column; gap: 0.5em; text-align: right; margin: 6px 0 0 0; }
+      .verse span { text-align: right !important; padding: 0; width: 100%; }
+      .comment { margin: 0 0 6px 10px; }
+      .back-btn { padding: 12px 20px; font-size: 0.9em; }
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">مجموعه غزل‌ها</h1>
+  
+  <div id="search-container">
+    <input type="text" id="search-input" placeholder="جستجو در متن اشعار... (مثال: عشق، دل، جام)" 
+           oninput="performSearch()">
+  </div>
+  
+  <div id="index-container">
+    <div id="index-list" class="ghazal-list loading">در حال بارگذاری فهرست غزل‌ها...</div>
+    <div id="search-results" class="search-results" style="display: none;"></div>
+  </div>
+  
+  <div id="poem-container" style="display: none; max-width: 800px; margin: 0 auto;">
+    <button class="back-btn" id="back-btn" onclick="goBack()">← بازگشت</button>
+    <div id="poems-display"></div>
+  </div>
+
+  <script>
+    let allPoems = {};
+    let cameFromSearch = false;
+    
+    async function loadPoems() {
+      const indexList = document.getElementById('index-list');
+      
+      try {
+        const poemsUrl = 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems.txt';
+        const response = await fetch(poemsUrl);
+        if (!response.ok) throw new Error(`خطا ${response.status}`);
+        const text = await response.text();
+        
+        const lines = text.split('\n').map(line => line.trim());
+        let currentPoemTitle = null;
+        let currentPoemVerses = [];
+        let i = 0;
+
+        while (i < lines.length) {
+          const line = lines[i];
+          if (!line) { i++; continue; }
+
+          if (line.startsWith('#')) {
+            if (currentPoemTitle && currentPoemVerses.length > 0) {
+              allPoems[currentPoemTitle] = currentPoemVerses;
+            }
+            currentPoemTitle = line.substring(1).trim();
+            currentPoemVerses = [];
+            i++;
+          } else if (currentPoemTitle) {
+            const misra1 = line;
+            if (i + 1 < lines.length && lines[i + 1] && !lines[i + 1].startsWith('#')) {
+              const misra2 = lines[i + 1];
+              i += 2;
+              
+              let comment = '';
+              if (i < lines.length && lines[i] && !lines[i].startsWith('#')) {
+                comment = lines[i];
+                i++;
+              }
+              
+              currentPoemVerses.push({ misra1, misra2, comment });
+            } else {
+              currentPoemVerses.push({ misra1, misra2: '', comment: '' });
+              i++;
+            }
+          } else {
+            i++;
+          }
+        }
+        
+        if (currentPoemTitle && currentPoemVerses.length > 0) {
+          allPoems[currentPoemTitle] = currentPoemVerses;
+        }
+        
+        displayIndex();
+        
+      } catch (error) {
+        indexList.innerHTML = `<p style="color: red;">خطا در بارگذاری: ${error.message}</p>`;
+      }
+    }
+    
+    function displayIndex() {
+      const indexList = document.getElementById('index-list');
+      indexList.innerHTML = '';
+      
+      Object.keys(allPoems).forEach(title => {
+        const item = document.createElement('div');
+        item.className = 'ghazal-item';
+        item.textContent = title;
+        item.onclick = () => {
+          cameFromSearch = false;
+          showPoem(title);
+        };
+        indexList.appendChild(item);
+      });
+    }
+    
+    function performSearch() {
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+      const searchResults = document.getElementById('search-results');
+      const indexList = document.getElementById('index-list');
+      
+      if (query.length === 0) {
+        searchResults.style.display = 'none';
+        indexList.style.display = 'block';
+        return;
+      }
+      
+      const results = [];
+      Object.keys(allPoems).forEach(title => {
+        const poem = allPoems[title];
+        for (let verse of poem) {
+          if (verse.misra1.toLowerCase().includes(query) || 
+              (verse.misra2 && verse.misra2.toLowerCase().includes(query))) {
+            results.push(title);
+            break;
+          }
+        }
+      });
+      
+      if (results.length === 0) {
+        searchResults.innerHTML = '<div class="no-results">هیچ شعری با این کلمه در متن یافت نشد</div>';
+      } else {
+        searchResults.innerHTML = '';
+        results.forEach(title => {
+          const item = document.createElement('div');
+          item.className = 'search-item highlight';
+          item.textContent = title;
+          item.onclick = () => {
+            cameFromSearch = true;
+            showPoem(title);
+          };
+          searchResults.appendChild(item);
+        });
+      }
+      
+      indexList.style.display = 'none';
+      searchResults.style.display = 'block';
+    }
+    
+    function goBack() {
+      if (cameFromSearch) {
+        document.getElementById('index-container').style.display = 'block';
+        document.getElementById('poem-container').style.display = 'none';
+        document.getElementById('search-results').style.display = 'block';
+        document.getElementById('index-list').style.display = 'none';
+      } else {
+        showIndex();
+      }
+    }
+    
+    function showIndex() {
+      document.getElementById('index-container').style.display = 'block';
+      document.getElementById('poem-container').style.display = 'none';
+      document.getElementById('search-input').value = '';
+      document.getElementById('search-results').style.display = 'none';
+      document.getElementById('index-list').style.display = 'block';
+      cameFromSearch = false;
+    }
+    
+    function showPoem(title) {
+      document.getElementById('index-container').style.display = 'none';
+      document.getElementById('poem-container').style.display = 'block';
+      
+      const backBtn = document.getElementById('back-btn');
+      if (cameFromSearch) {
+        backBtn.textContent = '← بازگشت به نتایج جستجو';
+      } else {
+        backBtn.textContent = '← بازگشت به فهرست';
+      }
+      
+      const display = document.getElementById('poems-display');
+      display.innerHTML = '';
+      
+      const poemDiv = document.createElement('div');
+      poemDiv.className = 'poem active';
+      /*poemDiv.innerHTML = `<h3>${title}</h3>`;*/
+      display.appendChild(poemDiv);
+      
+      const verses = allPoems[title];
+      verses.forEach(verseData => {
+        const verse = document.createElement('div');
+        verse.className = 'verse';
+        
+        if (verseData.misra2) {
+          verse.innerHTML = `
+            <span>${verseData.misra1}</span>
+            <span>${verseData.misra2}</span>
+          `;
+        } else {
+          verse.innerHTML = `<span>${verseData.misra1}</span>`;
+        }
+        
+        poemDiv.appendChild(verse);
+        
+        if (verseData.comment) {
+          const comment = document.createElement('div');
+          comment.className = 'comment';
+          comment.textContent = verseData.comment;
+          comment.style.display = 'none';
+          poemDiv.appendChild(comment);
+          
+          verse.onclick = function() {
+            comment.style.display = comment.style.display === 'none' ? 'block' : 'none';
+          };
+        }
+      });
+    }
+    
+    window.onload = loadPoems;
+  </script>
+</body>
+</html>
