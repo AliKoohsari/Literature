@@ -9,26 +9,26 @@
     body {
       font-family: 'Vazir', 'B Nazanin', 'Tahoma', sans-serif;
       text-align: right;
-      line-height: 2;
+      line-height: 1;
       padding: 20px;
       background: #f9f9f9;
       color: #333;
       margin: 0;
-      font-size: 16px;
-      font-weight: 300;
+      font-size: 15px;
+      font-weight: 270;
     }
     h1, h3 {
       font-family: 'Vazir', 'B Nazanin', sans-serif;
-      font-weight: 400;
+      font-weight: 350;
     }
     #search-container {
       max-width: 800px;
       margin: 0 auto 20px;
       background: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
       padding: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      /*border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);*/
     }
     #search-input {
       width: 100%;
@@ -37,7 +37,7 @@
       border-radius: 6px;
       font-size: 1.1em;
       font-family: 'Vazir', sans-serif;
-      font-weight: 300;
+      font-weight: 270;
       box-sizing: border-box;
       transition: border-color 0.3s;
     }
@@ -51,9 +51,9 @@
     }
     .ghazal-list, .search-results {
       background: white;
-      border: 1px solid #ddd;
+      /*border: 1px solid #ddd;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);*/
       padding: 20px;
       margin-bottom: 20px;
     }
@@ -64,7 +64,7 @@
       border-radius: 6px;
       transition: all 0.3s;
       font-size: 1.1em;
-      font-weight: 300;
+      font-weight: 270;
       border-right: 4px solid transparent;
     }
     .ghazal-item:hover, .search-item:hover {
@@ -189,7 +189,7 @@
   <h1 style="text-align: center;">مجموعه غزل‌ها</h1>
   
   <div id="search-container">
-    <input type="text" id="search-input" placeholder="جستجو در متن اشعار... (مثال: عشق، دل، جام)" 
+    <input type="text" id="search-input" placeholder="جستجو در متن اشعار..." 
            oninput="performSearch()">
   </div>
   
