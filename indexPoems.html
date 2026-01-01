@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مجموعه شعر</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #fcfcfc;
+      --text-main: #1d1d1f;
+      --text-muted: #86868b;
+      --accent: #0071e3;
+      --card-bg: #ffffff;
+      --border: #e5e5e7;
+      --item-hover: #f0f0f2;
+      --highlight-bg: #ffdb4d;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #000000;
+        --text-main: #f5f5f7;
+        --text-muted: #a1a1a6;
+        --accent: #0a84ff;
+        --card-bg: #111112;
+        --border:  #38383a;
+        --item-hover: #2c2c2e;
+        --highlight-bg: #ffd300;
+      }
+    }
+
+    mark {
+      background-color: var(--highlight-bg);
+      color: #000;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    body {
+      font-family: 'Vazir', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 700px;
+      padding: 5px 5px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      text-align: center;
+      margin: 0 0 1.5rem 0;
+    }
+
+    #search-container { 
+      position: relative;
+      margin-bottom: 1rem; 
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    #clear-search {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--border);
+      color: var(--text-muted);
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 9px;
+      border: none;
+    }
+
+    .list-item {
+      background: var(--card-bg);
+      padding: 4px 4px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+      /*border: 1px solid var(--border);*/
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .list-item:hover { background: var(--item-hover); }
+    .list-item span { font-size: 0.85rem; line-height: 1.6; }
+    .list-item small { font-size: 0.70rem; color: var(--text-muted); }
+
+    #poem-container {
+      background: var(--card-bg);
+      padding: 15px 5px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      margin-bottom: 80px;
+    }
+
+    #poet-info {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-align: center;
+      cursor: pointer;
+      padding: 5px;
+      position: relative;
+    }
+
+    .verse-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      padding: 10px 0;
+      position: relative;
+    }
+
+    .verse-num {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      min-width: 15px;
+      padding-top: 10px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .verse-content {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      cursor: pointer;
+    }
+
+    .verse-content span {
+      flex: 1;
+      text-align: justify;
+      font-size: 0.90rem;
+      line-height: 1.5;
+    }
+
+    .comment {
+      font-size: 0.80rem;
+      color: var(--text-muted);
+      padding: 2px 20px 10px 0;
+      margin-top: -8px;
+    }
+
+    #float-back-btn {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      width: 44px;
+      height: 44px;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.2s ease;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .copy-toast {
+      position: absolute;
+      right: 50%;
+      transform: translateX(50%);
+      top: -20px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      animation: fadeOut 1s forwards;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    @keyframes fadeOut { 0% {opacity:1;} 80% {opacity:1;} 100% {opacity:0;} }
+    .status-msg { text-align: center; color: var(--text-muted); padding: 15px; font-size: 0.85rem; }
+
+    @media (max-width: 600px) {
+      .verse-content { flex-direction: column; gap: 2px; }
+      .verse-content span { text-align: right !important; }
+      .comment { padding-right: 34px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <h1 id="h1-title">دیوان اشعار</h1>
+    
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="جستجو (کلمه ،+ کلمه)..." oninput="performSearch()">
+      <button id="clear-search" onclick="clearSearch()">✕</button>
+    </div>
+    
+    <div id="list-display">
+      <div class="status-msg">در حال بارگذاری...</div>
+    </div>
+    
+    <div id="poem-container" style="display: none;">
+      <div id="poet-info"></div>
+      <div id="poems-display"></div>
+    </div>
+  </div>
+
+  <button id="float-back-btn" onclick="goBack()" aria-label="بازگشت">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+  </button>
+
+  <script>
+    let allPoems = {};
+
+    function toPersianDigits(n) {
+      const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+      return n.toString().replace(/\d/g, x => farsiDigits[x]);
+    }
+
+    function normalizeText(text) {
+      if (!text) return "";
+      return text.replace(/[\u064B-\u065F]/g, "").replace(/آ/g, "ا").replace(/ي/g, "ی").replace(/ئ/g, "ی").replace(/ك/g, "ک").toLowerCase();
+    }
+
+    function highlightText(text, query) {
+      if (!query || !text) return text;
+      const words = query.split(/[+،]/).map(w => w.trim()).filter(w => w.length > 1);
+      let highlightedText = text;
+      words.forEach(word => {
+        const reg = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        highlightedText = highlightedText.replace(reg, '<mark>$1</mark>');
+      });
+      return highlightedText;
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('search-input');
+      input.value = '';
+      performSearch();
+      input.focus();
+    }
+
+    async function copyText(element, text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast(element);
+          return;
+        } catch (err) {}
+      }
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        if (document.execCommand('copy')) showToast(element);
+      } catch (err) {}
+      document.body.removeChild(textArea);
+    }
+
+    function showToast(parent) {
+      const toast = document.createElement('div');
+      toast.className = 'copy-toast';
+      toast.textContent = 'کپی شد';
+      parent.appendChild(toast);
+      setTimeout(() => toast.remove(), 1200);
+    }
+
+    async function loadPoems() {
+      try {
+        const response = await fetch('https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems.txt');
+        const text = await response.text();
+        const lines = text.split('\n').map(line => line.trim());
+        let currentPoemTitle = null, currentPoemVerses = [], currentPoet = '', i = 0;
+
+        while (i < lines.length) {
+          const line = lines[i];
+          if (!line) { i++; continue; }
+          if (line.startsWith('#')) {
+            if (currentPoemTitle) allPoems[currentPoemTitle] = { verses: currentPoemVerses, poet: currentPoet };
+            const parts = line.substring(1).trim().split(': ');
+            currentPoet = parts[0].trim();
+            currentPoemTitle = parts.length > 1 ? parts[1].trim() : parts[0].trim();
+            currentPoemVerses = [];
+            i++;
+          } else if (currentPoemTitle) {
+            const misra1 = line;
+            if (i + 1 < lines.length && lines[i + 1] && !lines[i + 1].startsWith('#')) {
+              const misra2 = lines[i + 1]; i += 2;
+              let comment = (i < lines.length && lines[i] && !lines[i].startsWith('#')) ? lines[i++] : '';
+              currentPoemVerses.push({ misra1, misra2, comment });
+            } else { currentPoemVerses.push({ misra1, misra2: '', comment: '' }); i++; }
+          } else { i++; }
+        }
+        if (currentPoemTitle) allPoems[currentPoemTitle] = { verses: currentPoemVerses, poet: currentPoet };
+        renderList(Object.keys(allPoems).map(t => ({type: 'poem', title: t, poet: allPoems[t].poet})));
+      } catch (e) { document.getElementById('list-display').innerHTML = "خطا در بارگذاری."; }
+    }
+    
+    function renderList(results, highlightQuery = null) {
+      const container = document.getElementById('list-display');
+      container.innerHTML = '';
+      if (results.length === 0) {
+        container.innerHTML = '<div class="status-msg">نتیجه‌ای یافت نشد</div>';
+        return;
+      }
+      results.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        if (item.type === 'verse' && highlightQuery) {
+          const hM1 = highlightText(item.m1, highlightQuery);
+          const hM2 = highlightText(item.m2, highlightQuery);
+          div.innerHTML = `<div><span>${hM1} ${item.m2 ? '... ' + hM2 : ''}</span><br><small>${item.poet} - ${item.title}</small></div><small style="color:var(--accent)">←</small>`;
+          div.onclick = () => showPoem(item.title, highlightQuery);
+        } else {
+          div.innerHTML = `<span>${item.title}</span><small>${item.poet}</small>`;
+          div.onclick = () => showPoem(item.title, null);
+        }
+        container.appendChild(div);
+      });
+    }
+
+    function performSearch() {
+      const rawQuery = document.getElementById('search-input').value.trim();
+      const clearBtn = document.getElementById('clear-search');
+      clearBtn.style.display = rawQuery.length > 0 ? 'flex' : 'none';
+      
+      if (rawQuery.length === 0) { 
+        renderList(Object.keys(allPoems).map(t => ({type: 'poem', title: t, poet: allPoems[t].poet}))); 
+        return; 
+      }
+
+      // Updated regex to split by "+" or "،"
+      const multiWordRegex = /[+،]/;
+      
+      if (multiWordRegex.test(rawQuery)) {
+        const keywords = normalizeText(rawQuery).split(multiWordRegex).map(k => k.trim()).filter(k => k !== "");
+        const results = Object.keys(allPoems).filter(title => {
+          const poem = allPoems[title];
+          const content = normalizeText(title + " " + poem.poet + " " + poem.verses.map(v => v.misra1 + " " + v.misra2).join(" "));
+          return keywords.every(word => content.includes(word));
+        }).map(t => ({type: 'poem', title: t, poet: allPoems[t].poet}));
+        renderList(results);
+      } 
+      else {
+        const normalizedKeyword = normalizeText(rawQuery);
+        let results = [];
+        Object.keys(allPoems).forEach(title => {
+          const poem = allPoems[title];
+          poem.verses.forEach(v => {
+            if (normalizeText(v.misra1).includes(normalizedKeyword) || normalizeText(v.misra2).includes(normalizedKeyword)) {
+              results.push({type: 'verse', title: title, poet: poem.poet, m1: v.misra1, m2: v.misra2});
+            }
+          });
+        });
+        renderList(results, rawQuery);
+      }
+    }
+    
+    function goBack() {
+      document.getElementById('list-display').style.display = 'block';
+      document.getElementById('poem-container').style.display = 'none';
+      document.getElementById('search-container').style.display = 'block';
+      document.getElementById('h1-title').style.display = 'block';
+      document.getElementById('float-back-btn').style.display = 'none';
+    }
+    
+    function showPoem(title, highlightWord) {
+      document.getElementById('list-display').style.display = 'none';
+      document.getElementById('search-container').style.display = 'none';
+      document.getElementById('h1-title').style.display = 'none';
+      document.getElementById('poem-container').style.display = 'block';
+      document.getElementById('float-back-btn').style.display = 'flex';
+      
+      const poemData = allPoems[title];
+      const poetHeader = document.getElementById('poet-info');
+      poetHeader.textContent = `${poemData.poet}: ${title}`;
+      
+      poetHeader.onclick = () => {
+        const fullPoemText = poemData.verses.map(v => v.misra2 ? `${v.misra1} / ${v.misra2}` : v.misra1).join('\n');
+        copyText(poetHeader, `${poemData.poet} - ${title}\n\n${fullPoemText}`);
+      };
+
+      const display = document.getElementById('poems-display');
+      display.innerHTML = '';
+      
+      poemData.verses.forEach((v, index) => {
+        const row = document.createElement('div');
+        row.className = 'verse-row';
+        const num = document.createElement('div');
+        num.className = 'verse-num';
+        num.textContent = toPersianDigits(index + 1);
+        num.onclick = () => copyText(num, v.misra2 ? `${v.misra1}\n${v.misra2}` : v.misra1);
+        
+        const content = document.createElement('div');
+        content.className = 'verse-content';
+        
+        let m1Disp = highlightWord ? highlightText(v.misra1, highlightWord) : v.misra1;
+        let m2Disp = highlightWord ? highlightText(v.misra2, highlightWord) : v.misra2;
+
+        content.innerHTML = v.misra2 ? `<span>${m1Disp}</span><span>${m2Disp}</span>` : `<span>${m1Disp}</span>`;
+        
+        row.appendChild(num);
+        row.appendChild(content);
+        display.appendChild(row);
+
+        if (v.comment) {
+          const com = document.createElement('div');
+          com.className = 'comment'; com.textContent = v.comment; com.style.display = 'none';
+          display.appendChild(com);
+          content.onclick = () => com.style.display = com.style.display === 'none' ? 'block' : 'none';
+        }
+      });
+      window.scrollTo(0,0);
+    }
+    window.onload = loadPoems;
+  </script>
+</body>
+</html>
