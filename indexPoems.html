@@ -15,7 +15,8 @@
       --border: #e5e5e7;
       --item-hover: #f0f0f2;
       --highlight-bg: #ffdb4d;
-      --number-red: #86868b;
+      --number-color: #86868b;
+      --comment-star: #d97706; /* Visible in light theme */
     }
 
     @media (prefers-color-scheme: dark) {
@@ -28,7 +29,8 @@
         --border:  #38383a;
         --item-hover: #2c2c2e;
         --highlight-bg: #ffd300;
-        --number-red: #a1a1a6;
+        --number-color: #a1a1a6;
+        --comment-star: #ffdb4d; /* Bright yellow for dark theme */
       }
     }
 
@@ -129,11 +131,12 @@
     .list-item small { font-size: 0.70rem; color: var(--text-muted); }
 
     .list-num {
-      color: var(--number-red);
+      color: var(--number-color);
       font-weight: 500;
       margin-left: 4px;
     }
 
+    /* Target dash and letters after it in main list */
     .muted-part {
       color: var(--text-muted);
     }
@@ -388,9 +391,9 @@
         div.className = 'list-item';
         const pNum = `<span class="list-num">${toPersianDigits(index + 1)}.</span> `;
         
-        // Logic to mute everything after the dash in the title
+        // Split title by dash for muting
         let displayTitle = item.title;
-        const dashIndex = displayTitle.search(/[—\-]/); // Support both em-dash and hyphen
+        const dashIndex = displayTitle.search(/[—\-]/);
         if (dashIndex !== -1) {
           const mainPart = displayTitle.substring(0, dashIndex);
           const mutedPart = displayTitle.substring(dashIndex);
@@ -499,7 +502,8 @@
         if (v.comment) {
           const com = document.createElement('div');
           com.className = 'comment';
-          com.innerHTML = v.comment.replace(/\*/g, '<br><span style="color: yellow;">*</span>'); 
+          // Use CSS variable for the asterisk color
+          com.innerHTML = v.comment.replace(/\*/g, '<br><span style="color: var(--comment-star);">*</span>'); 
           com.style.display = 'none';
           display.appendChild(com);
           content.onclick = () => com.style.display = com.style.display === 'none' ? 'block' : 'none';
