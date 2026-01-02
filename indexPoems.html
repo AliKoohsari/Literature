@@ -15,6 +15,7 @@
       --border: #e5e5e7;
       --item-hover: #f0f0f2;
       --highlight-bg: #ffdb4d;
+      --number-red: #86868b;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -27,6 +28,7 @@
         --border:  #38383a;
         --item-hover: #2c2c2e;
         --highlight-bg: #ffd300;
+        --number-red: #a1a1a6;
       }
     }
 
@@ -54,21 +56,34 @@
       padding: 5px 5px;
     }
 
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
     h1 {
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       font-weight: 500;
-      text-align: center;
-      margin: 0 0 1.5rem 0;
+      margin: 0;
+      padding: 0px 20px 0px 20px;
+    }
+
+    #stats-display {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 0px 20px 0px 20px;
     }
 
     #search-container { 
       position: relative;
-      margin-bottom: 1rem; 
+      margin-bottom: 1rem;
     }
 
     #search-input {
       width: 100%;
-      padding: 10px 40px 10px 15px;
+      padding: 5px 20px 5px 20px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: var(--card-bg);
@@ -86,8 +101,8 @@
       transform: translateY(-50%);
       background: var(--border);
       color: var(--text-muted);
-      width: 25px;
-      height: 25px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       display: none;
       align-items: center;
@@ -104,7 +119,6 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background 0.2s;
-      /*border: 1px solid var(--border);*/
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -113,6 +127,16 @@
     .list-item:hover { background: var(--item-hover); }
     .list-item span { font-size: 0.85rem; line-height: 1.6; }
     .list-item small { font-size: 0.70rem; color: var(--text-muted); }
+
+    .list-num {
+      color: var(--number-red);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .muted-part {
+      color: var(--text-muted);
+    }
 
     #poem-container {
       background: var(--card-bg);
@@ -222,7 +246,10 @@
 <body>
 
   <div class="app-container">
-    <h1 id="h1-title">دیوان اشعار</h1>
+    <div class="header-row" id="main-header">
+      <h1 id="h1-title">دیوان اشعار</h1>
+      <div id="stats-display"></div>
+    </div>
     
     <div id="search-container">
       <input type="text" id="search-input" placeholder="جستجو (کلمه ،+ کلمه)..." oninput="performSearch()">
@@ -268,6 +295,15 @@
         highlightedText = highlightedText.replace(reg, '<mark>$1</mark>');
       });
       return highlightedText;
+    }
+
+    function updateStats(currentCount, totalCount, isSearch) {
+      const stats = document.getElementById('stats-display');
+      if (isSearch) {
+        stats.textContent = `${toPersianDigits(currentCount)} از ${toPersianDigits(totalCount)}`;
+      } else {
+        stats.textContent = `${toPersianDigits(totalCount)} شعر`;
+      }
     }
 
     function clearSearch() {
@@ -333,7 +369,10 @@
           } else { i++; }
         }
         if (currentPoemTitle) allPoems[currentPoemTitle] = { verses: currentPoemVerses, poet: currentPoet };
-        renderList(Object.keys(allPoems).map(t => ({type: 'poem', title: t, poet: allPoems[t].poet})));
+        
+        const poemKeys = Object.keys(allPoems);
+        updateStats(poemKeys.length, poemKeys.length, false);
+        renderList(poemKeys.map(t => ({type: 'poem', title: t, poet: allPoems[t].poet})));
       } catch (e) { document.getElementById('list-display').innerHTML = "خطا در بارگذاری."; }
     }
     
@@ -344,16 +383,27 @@
         container.innerHTML = '<div class="status-msg">نتیجه‌ای یافت نشد</div>';
         return;
       }
-      results.forEach(item => {
+      results.forEach((item, index) => {
         const div = document.createElement('div');
         div.className = 'list-item';
+        const pNum = `<span class="list-num">${toPersianDigits(index + 1)}.</span> `;
+        
+        // Logic to mute everything after the dash in the title
+        let displayTitle = item.title;
+        const dashIndex = displayTitle.search(/[—\-]/); // Support both em-dash and hyphen
+        if (dashIndex !== -1) {
+          const mainPart = displayTitle.substring(0, dashIndex);
+          const mutedPart = displayTitle.substring(dashIndex);
+          displayTitle = `${mainPart}<span class="muted-part">${mutedPart}</span>`;
+        }
+
         if (item.type === 'verse' && highlightQuery) {
           const hM1 = highlightText(item.m1, highlightQuery);
           const hM2 = highlightText(item.m2, highlightQuery);
-          div.innerHTML = `<div><span>${hM1} ${item.m2 ? '... ' + hM2 : ''}</span><br><small>${item.poet} - ${item.title}</small></div><small style="color:var(--accent)">←</small>`;
+          div.innerHTML = `<div><span>${pNum}${hM1} ${item.m2 ? '... ' + hM2 : ''}</span><br><small>${item.poet} - ${item.title}</small></div><small style="color:var(--accent)">←</small>`;
           div.onclick = () => showPoem(item.title, highlightQuery);
         } else {
-          div.innerHTML = `<span>${item.title}</span><small>${item.poet}</small>`;
+          div.innerHTML = `<span>${pNum}${displayTitle}</span><small>${item.poet}</small>`;
           div.onclick = () => showPoem(item.title, null);
         }
         container.appendChild(div);
@@ -365,26 +415,27 @@
       const clearBtn = document.getElementById('clear-search');
       clearBtn.style.display = rawQuery.length > 0 ? 'flex' : 'none';
       
+      const totalPoems = Object.keys(allPoems).length;
+
       if (rawQuery.length === 0) { 
+        updateStats(totalPoems, totalPoems, false);
         renderList(Object.keys(allPoems).map(t => ({type: 'poem', title: t, poet: allPoems[t].poet}))); 
         return; 
       }
 
-      // Updated regex to split by "+" or "،"
       const multiWordRegex = /[+،]/;
+      let results = [];
       
       if (multiWordRegex.test(rawQuery)) {
         const keywords = normalizeText(rawQuery).split(multiWordRegex).map(k => k.trim()).filter(k => k !== "");
-        const results = Object.keys(allPoems).filter(title => {
+        results = Object.keys(allPoems).filter(title => {
           const poem = allPoems[title];
           const content = normalizeText(title + " " + poem.poet + " " + poem.verses.map(v => v.misra1 + " " + v.misra2).join(" "));
           return keywords.every(word => content.includes(word));
         }).map(t => ({type: 'poem', title: t, poet: allPoems[t].poet}));
-        renderList(results);
       } 
       else {
         const normalizedKeyword = normalizeText(rawQuery);
-        let results = [];
         Object.keys(allPoems).forEach(title => {
           const poem = allPoems[title];
           poem.verses.forEach(v => {
@@ -393,22 +444,23 @@
             }
           });
         });
-        renderList(results, rawQuery);
       }
+      updateStats(results.length, totalPoems, true);
+      renderList(results, rawQuery);
     }
     
     function goBack() {
       document.getElementById('list-display').style.display = 'block';
       document.getElementById('poem-container').style.display = 'none';
       document.getElementById('search-container').style.display = 'block';
-      document.getElementById('h1-title').style.display = 'block';
+      document.getElementById('main-header').style.display = 'flex';
       document.getElementById('float-back-btn').style.display = 'none';
     }
     
     function showPoem(title, highlightWord) {
       document.getElementById('list-display').style.display = 'none';
       document.getElementById('search-container').style.display = 'none';
-      document.getElementById('h1-title').style.display = 'none';
+      document.getElementById('main-header').style.display = 'none';
       document.getElementById('poem-container').style.display = 'block';
       document.getElementById('float-back-btn').style.display = 'flex';
       
@@ -446,7 +498,9 @@
 
         if (v.comment) {
           const com = document.createElement('div');
-          com.className = 'comment'; com.textContent = v.comment; com.style.display = 'none';
+          com.className = 'comment';
+          com.innerHTML = v.comment.replace(/\*/g, '<br><span style="color: yellow;">*</span>'); 
+          com.style.display = 'none';
           display.appendChild(com);
           content.onclick = () => com.style.display = com.style.display === 'none' ? 'block' : 'none';
         }
