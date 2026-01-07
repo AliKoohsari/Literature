@@ -225,15 +225,14 @@
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 1.3rem; 
       opacity: 0.9;
       pointer-events: auto;
       position: fixed;
       bottom: 25px;
     }
 
-    #prev-btn { left: 30px; }
-    #next-btn { right: 30px; }
+    #prev-btn { left: 20px; }
+    #next-btn { right: 20px; }
     #back-btn { left: 50%; transform: translateX(-50%); }
 
     .nav-circle-btn:disabled {
@@ -318,14 +317,26 @@
   </div>
 
   <div id="nav-row" class="nav-container">
-    <button id="prev-btn" class="nav-circle-btn" onclick="navPoem(-1)" aria-label="قبلی">⭡</button>
+    <button id="prev-btn" class="nav-circle-btn" onclick="navPoem(-1)" aria-label="قبلی">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+
     <button id="back-btn" class="nav-circle-btn" onclick="goBack()" aria-label="بازگشت">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"></line>
         <polyline points="12 19 5 12 12 5"></polyline>
       </svg>
     </button>
-    <button id="next-btn" class="nav-circle-btn" onclick="navPoem(1)" aria-label="بعدی">⭣</button>
+
+    <button id="next-btn" class="nav-circle-btn" onclick="navPoem(1)" aria-label="بعدی">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <polyline points="19 12 12 19 5 12"></polyline>
+      </svg>
+    </button>
   </div>
 
   <script>
