@@ -146,7 +146,7 @@
       padding: 15px 5px;
       border-radius: 5px;
       border: 1px solid var(--border);
-      margin-bottom: 80px;
+      margin-bottom: 100px;
     }
 
     #poet-info {
@@ -200,28 +200,48 @@
       margin-top: -8px;
     }
 
-    #float-back-btn {
+    .nav-container {
       position: fixed;
       bottom: 25px;
-      left: 25px;
+      left: 0;
+      right: 0;
+      display: none; 
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .nav-circle-btn {
       width: 44px;
       height: 44px;
       background-color: var(--accent);
       color: white;
       border: none;
       border-radius: 50%;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 4px 15px rgba(0,0,0,0.2);
       cursor: pointer;
-      z-index: 1000;
       transition: all 0.2s ease;
-      font-size: 1.2rem;
+      font-size: 1.3rem; 
       opacity: 0.9;
+      pointer-events: auto;
+      position: fixed;
+      bottom: 25px;
     }
 
-    /* Updated Menu Button Position to Top-Right */
+    #prev-btn { left: 30px; }
+    #next-btn { right: 30px; }
+    #back-btn { left: 50%; transform: translateX(-50%); }
+
+    .nav-circle-btn:disabled {
+      background-color: var(--border);
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     #float-menu-btn {
       position: absolute;
       top: 10px;
@@ -239,9 +259,7 @@
       transition: color 0.2s;
     }
     
-    #float-menu-btn:hover {
-      color: var(--accent);
-    }
+    #float-menu-btn:hover { color: var(--accent); }
 
     .copy-toast {
       position: absolute;
@@ -299,17 +317,24 @@
     </div>
   </div>
 
-  <button id="float-back-btn" onclick="goBack()" aria-label="بازگشت">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="19" y1="12" x2="5" y2="12"></line>
-      <polyline points="12 19 5 12 12 5"></polyline>
-    </svg>
-  </button>
+  <div id="nav-row" class="nav-container">
+    <button id="prev-btn" class="nav-circle-btn" onclick="navPoem(-1)" aria-label="قبلی">⭡</button>
+    <button id="back-btn" class="nav-circle-btn" onclick="goBack()" aria-label="بازگشت">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </button>
+    <button id="next-btn" class="nav-circle-btn" onclick="navPoem(1)" aria-label="بعدی">⭣</button>
+  </div>
 
   <script>
     let allPoems = {};
     let myPoems = {};
     let currentMode = 'main'; 
+    let currentActiveList = []; 
+    let currentPoemIndex = -1;
+    let currentSearchHighlight = null;
 
     function toPersianDigits(n) {
       const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -381,7 +406,6 @@
       const lines = text.split('\n').map(line => line.trim());
       let poems = {};
       let currentPoemTitle = null, currentPoemVerses = [], currentPoet = '', i = 0;
-
       while (i < lines.length) {
         const line = lines[i];
         if (!line) { i++; continue; }
@@ -411,10 +435,8 @@
           fetch('https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems.txt'),
           fetch('https://raw.githubusercontent.com/AliKoohsari/Literature/main/Koohsari.txt')
         ]);
-        
         allPoems = parsePoemFile(await res1.text(), true);
         myPoems = parsePoemFile(await res2.text(), false);
-        
         refreshDisplay();
       } catch (e) { document.getElementById('list-display').innerHTML = "خطا در بارگذاری."; }
     }
@@ -430,10 +452,13 @@
       const targetData = currentMode === 'main' ? allPoems : myPoems;
       const keys = Object.keys(targetData);
       updateStats(keys.length, keys.length, false);
-      renderList(keys.map(t => ({type: 'poem', title: t, poet: targetData[t].poet})));
+      const results = keys.map(t => ({type: 'poem', title: t, poet: targetData[t].poet}));
+      renderList(results);
     }
     
     function renderList(results, highlightQuery = null) {
+      currentActiveList = results;
+      currentSearchHighlight = highlightQuery;
       const container = document.getElementById('list-display');
       container.innerHTML = '';
       if (results.length === 0) {
@@ -444,7 +469,6 @@
         const div = document.createElement('div');
         div.className = 'list-item';
         const pNum = `<span class="list-num">${toPersianDigits(index + 1)}.</span> `;
-        
         let displayTitle = item.title;
         const dashIndex = displayTitle.search(/[—\-]/);
         if (dashIndex !== -1) {
@@ -452,15 +476,14 @@
           const mutedPart = displayTitle.substring(dashIndex);
           displayTitle = `${mainPart}<span class="muted-part">${mutedPart}</span>`;
         }
-
         if (item.type === 'verse' && highlightQuery) {
           const hM1 = highlightText(item.m1, highlightQuery);
           const hM2 = highlightText(item.m2, highlightQuery);
           div.innerHTML = `<div><span>${pNum}${hM1} ${item.m2 ? '... ' + hM2 : ''}</span><br><small>${item.poet} - ${item.title}</small></div><small style="color:var(--accent)">←</small>`;
-          div.onclick = () => showPoem(item.title, highlightQuery);
+          div.onclick = () => showPoem(index);
         } else {
           div.innerHTML = `<span>${pNum}${displayTitle}</span><small>${item.poet}</small>`;
-          div.onclick = () => showPoem(item.title, null);
+          div.onclick = () => showPoem(index);
         }
         container.appendChild(div);
       });
@@ -470,19 +493,15 @@
       const rawQuery = document.getElementById('search-input').value.trim();
       const clearBtn = document.getElementById('clear-search');
       clearBtn.style.display = rawQuery.length > 0 ? 'flex' : 'none';
-      
       const targetData = currentMode === 'main' ? allPoems : myPoems;
       const totalPoems = Object.keys(targetData).length;
-
       if (rawQuery.length === 0) { 
         updateStats(totalPoems, totalPoems, false);
         renderList(Object.keys(targetData).map(t => ({type: 'poem', title: t, poet: targetData[t].poet}))); 
         return; 
       }
-
       const multiWordRegex = /[+،]/;
       let results = [];
-      
       if (multiWordRegex.test(rawQuery)) {
         const keywords = normalizeText(rawQuery).split(multiWordRegex).map(k => k.trim()).filter(k => k !== "");
         results = Object.keys(targetData).filter(title => {
@@ -490,8 +509,7 @@
           const content = normalizeText(title + " " + poem.poet + " " + poem.verses.map(v => v.misra1 + " " + v.misra2).join(" "));
           return keywords.every(word => content.includes(word));
         }).map(t => ({type: 'poem', title: t, poet: targetData[t].poet}));
-      } 
-      else {
+      } else {
         const normalizedKeyword = normalizeText(rawQuery);
         Object.keys(targetData).forEach(title => {
           const poem = targetData[title];
@@ -511,51 +529,55 @@
       document.getElementById('poem-container').style.display = 'none';
       document.getElementById('search-container').style.display = 'block';
       document.getElementById('main-header').style.display = 'flex';
-      document.getElementById('float-back-btn').style.display = 'none';
+      document.getElementById('nav-row').style.display = 'none';
       document.getElementById('float-menu-btn').style.display = 'flex';
     }
+
+    function navPoem(direction) {
+        const newIndex = currentPoemIndex + direction;
+        if (newIndex >= 0 && newIndex < currentActiveList.length) {
+            showPoem(newIndex);
+        }
+    }
     
-    function showPoem(title, highlightWord) {
+    function showPoem(index) {
+      currentPoemIndex = index;
+      const item = currentActiveList[index];
+      const title = item.title;
+      const highlightWord = currentSearchHighlight;
       document.getElementById('list-display').style.display = 'none';
       document.getElementById('search-container').style.display = 'none';
       document.getElementById('main-header').style.display = 'none';
       document.getElementById('poem-container').style.display = 'block';
-      document.getElementById('float-back-btn').style.display = 'flex';
+      document.getElementById('nav-row').style.display = 'block';
       document.getElementById('float-menu-btn').style.display = 'none';
-      
+      document.getElementById('prev-btn').disabled = (index <= 0);
+      document.getElementById('next-btn').disabled = (index >= currentActiveList.length - 1);
       const targetData = currentMode === 'main' ? allPoems : myPoems;
       const poemData = targetData[title];
       const poetHeader = document.getElementById('poet-info');
       poetHeader.textContent = `${poemData.poet}: ${title}`;
-      
       poetHeader.onclick = () => {
         const fullPoemText = poemData.verses.map(v => v.misra2 ? `${v.misra1} / ${v.misra2}` : v.misra1).join('\n');
         copyText(poetHeader, `${poemData.poet} - ${title}\n\n${fullPoemText}`);
       };
-
       const display = document.getElementById('poems-display');
       display.innerHTML = '';
-      
-      poemData.verses.forEach((v, index) => {
+      poemData.verses.forEach((v, idx) => {
         const row = document.createElement('div');
         row.className = 'verse-row';
         const num = document.createElement('div');
         num.className = 'verse-num';
-        num.textContent = toPersianDigits(index + 1);
+        num.textContent = toPersianDigits(idx + 1);
         num.onclick = () => copyText(num, v.misra2 ? `${v.misra1}\n${v.misra2}` : v.misra1);
-        
         const content = document.createElement('div');
         content.className = 'verse-content';
-        
         let m1Disp = highlightWord ? highlightText(v.misra1, highlightWord) : v.misra1;
         let m2Disp = highlightWord ? highlightText(v.misra2, highlightWord) : v.misra2;
-
         content.innerHTML = v.misra2 ? `<span>${m1Disp}</span><span>${m2Disp}</span>` : `<span>${m1Disp}</span>`;
-        
         row.appendChild(num);
         row.appendChild(content);
         display.appendChild(row);
-
         if (v.comment) {
           const com = document.createElement('div');
           com.className = 'comment';
