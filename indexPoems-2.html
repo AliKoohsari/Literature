@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مجموعه شعر</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #fcfcfc;
+      --text-main: #1d1d1f;
+      --text-muted: #86868b;
+      --accent: #0071e3;
+      --card-bg: #ffffff;
+      --border: #e5e5e7;
+      --item-hover: #f0f0f2;
+      --highlight-bg: #ffdb4d;
+      --number-color: #86868b;
+      --comment-star: #d97706;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #000000;
+        --text-main: #f5f5f7;
+        --text-muted: #a1a1a6;
+        --accent: #0a84ff;
+        --card-bg: #111112;
+        --border:  #38383a;
+        --item-hover: #2c2c2e;
+        --highlight-bg: #ffd300;
+        --number-color: #a1a1a6;
+        --comment-star: #ffdb4d;
+      }
+    }
+
+    mark {
+      background-color: var(--highlight-bg);
+      color: #000;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    body {
+      font-family: 'Vazir', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 700px;
+      padding: 5px 5px;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.7rem;
+      padding-top: 5px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 0;
+      padding: 0px 50px 0px 20px;
+    }
+
+    #stats-display {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      padding: 0px 20px 0px 20px;
+    }
+
+    #search-container { 
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    #search-input {
+      width: 100%;
+      padding: 5px 20px 5px 20px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    #clear-search {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--border);
+      color: var(--text-muted);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 9px;
+      border: none;
+    }
+
+    .list-item {
+      background: var(--card-bg);
+      padding: 2px 2px;
+      margin-bottom: 2px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .list-item:hover { background: var(--item-hover); }
+    .list-item span { font-size: 0.85rem; line-height: 1.6; }
+    .list-item small { font-size: 0.70rem; color: var(--text-muted); }
+
+    .list-num {
+      color: var(--number-color);
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .muted-part {
+      color: var(--text-muted);
+    }
+
+    #poem-container {
+      background: var(--card-bg);
+      padding: 15px 5px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      margin-bottom: 100px;
+    }
+
+    #poet-info {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-align: center;
+      cursor: pointer;
+      padding: 5px;
+      position: relative;
+    }
+
+    .verse-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      padding: 10px 0;
+      position: relative;
+    }
+
+    .verse-num {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      min-width: 15px;
+      padding-top: 10px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .verse-content {
+      flex: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      cursor: pointer;
+    }
+
+    .verse-content span {
+      flex: 1;
+      text-align: justify;
+      font-size: 0.90rem;
+      line-height: 1.5;
+    }
+
+    .comment {
+      font-size: 0.80rem;
+      color: var(--text-muted);
+      padding: 2px 20px 10px 0;
+      margin-top: -8px;
+    }
+
+    .nav-container {
+      position: fixed;
+      bottom: 25px;
+      left: 0;
+      right: 0;
+      display: none; 
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .nav-circle-btn {
+      width: 44px;
+      height: 44px;
+      background-color: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      opacity: 0.9;
+      pointer-events: auto;
+      position: fixed;
+      bottom: 25px;
+    }
+
+    #prev-btn { left: 20px; }
+    #next-btn { right: 20px; }
+    #back-btn { left: 50%; transform: translateX(-50%); }
+
+    .nav-circle-btn:disabled {
+      background-color: var(--border);
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #float-menu-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      background-color: transparent;
+      color: var(--text-muted);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: color 0.2s;
+    }
+    
+    #float-menu-btn:hover { color: var(--accent); }
+
+    .copy-toast {
+      position: absolute;
+      right: 50%;
+      transform: translateX(50%);
+      top: -20px;
+      background: var(--accent);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      animation: fadeOut 1s forwards;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+        /* New Menu Overlay Styles */
+    #menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
+    }
+
+    .menu-card {
+      background: var(--card-bg);
+      width: 80%;
+      max-width: 300px;
+      border-radius: 15px;
+      padding: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .menu-card h2 {
+      font-size: 1.1rem;
+      text-align: center;
+      margin-top: 0;
+      color: var(--accent);
+    }
+
+    .menu-option {
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .menu-option:last-child { border-bottom: none; }
+    .menu-option:hover { background: var(--item-hover); }
+    .menu-option.active { color: var(--accent); font-weight: 700; }
+
+
+    .list-item.sub-level {
+      padding-right: 25px; /* Indent for RTL */
+      background: var(--bg-color);
+      border-right: 2px solid var(--accent);
+      margin-top: -2px;
+      margin-bottom: 2px;
+    }
+    
+    .sub-indicator {
+      color: var(--accent);
+      margin-left: 8px;
+      font-weight: bold;
+    }
+
+
+    @keyframes fadeOut { 0% {opacity:1;} 80% {opacity:1;} 100% {opacity:0;} }
+    .status-msg { text-align: center; color: var(--text-muted); padding: 15px; font-size: 0.85rem; }
+
+    @media (max-width: 600px) {
+      .verse-content { flex-direction: column; gap: 2px; }
+      .verse-content span { text-align: right !important; }
+      .comment { padding-right: 34px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" style="position: relative;">
+    <button id="float-menu-btn" onclick="toggleView()" aria-label="منو">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="header-row" id="main-header">
+      <h1 id="h1-title">دیوان اشعار</h1>
+      <div id="stats-display"></div>
+    </div>
+    
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="جستجو (کلمه ،+ کلمه)..." oninput="performSearch()">
+      <button id="clear-search" onclick="clearSearch()">✕</button>
+    </div>
+    
+    <div id="list-display">
+      <div class="status-msg">در حال بارگذاری...</div>
+    </div>
+    
+    <div id="poem-container" style="display: none;">
+      <div id="poet-info"></div>
+      <div id="poems-display"></div>
+    </div>
+  </div>
+
+  <div id="nav-row" class="nav-container">
+    <button id="prev-btn" class="nav-circle-btn" onclick="navPoem(-1)" aria-label="قبلی">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="19" x2="12" y2="5"></line>
+        <polyline points="5 12 12 5 19 12"></polyline>
+      </svg>
+    </button>
+
+    <button id="back-btn" class="nav-circle-btn" onclick="goBack()" aria-label="بازگشت">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+    </button>
+
+    <button id="next-btn" class="nav-circle-btn" onclick="navPoem(1)" aria-label="بعدی">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <polyline points="19 12 12 19 5 12"></polyline>
+      </svg>
+    </button>
+  </div>
+
+  <div id="menu-overlay" onclick="closeMenu()">
+    <div class="menu-card" onclick="event.stopPropagation()">
+      <h2>انتخاب کتاب</h2>
+      <div id="menu-options"></div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <script>
+    let allData = {}; // Stores poems for each source
+    let currentSource = 'main'; 
+    let currentActiveList = []; 
+    let currentPoemIndex = -1;
+    let currentSearchHighlight = null;
+
+    // Define your files here
+    const sources = [
+      { id: 'main', label: 'دیوان اشعار', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems-2.txt' },
+      { id: 'personal', label: 'اشعار من', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Koohsari-2.txt' },
+      { id: 'gilgamesh', label: 'گیلگمش', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Gilgamesh-2.txt' }
+    ];
+
+    function toPersianDigits(n) {
+      const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+      return n.toString().replace(/\d/g, x => farsiDigits[x]);
+    }
+
+    function normalizeText(text) {
+      if (!text) return "";
+      return text.replace(/[\u064B-\u065F]/g, "").replace(/آ/g, "ا").replace(/ي/g, "ی").replace(/ئ/g, "ی").replace(/ك/g, "ک").toLowerCase();
+    }
+
+    function highlightText(text, query) {
+      if (!query || !text) return text;
+      const words = query.split(/[+،]/).map(w => w.trim()).filter(w => w.length > 1);
+      let highlightedText = text;
+      words.forEach(word => {
+        const reg = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        highlightedText = highlightedText.replace(reg, '<mark>$1</mark>');
+      });
+      return highlightedText;
+    }
+
+    function updateStats(currentCount, totalCount, isSearch) {
+      const stats = document.getElementById('stats-display');
+      stats.textContent = isSearch ? `${toPersianDigits(currentCount)} از ${toPersianDigits(totalCount)}` : `${toPersianDigits(totalCount)} شعر`;
+    }
+
+    function parsePoemFile(text) {
+      const lines = text.split('\n').map(line => line.trim());
+      let poems = {};
+      let currentParentKey = null; // Tracks the last #PoemOld or #PoemNew
+      let currentPoemKey = null;   // Tracks the specific poem being parsed
+      let i = 0;
+
+      while (i < lines.length) {
+        const line = lines[i];
+        if (!line) { i++; continue; }
+
+        // Level 1: Main Metadata
+        if (line.startsWith('#PoemOld') || line.startsWith('#PoemNew')) {
+          const isNewStyle = line.startsWith('#PoemNew');
+          const parts = line.split(',').map(p => p.trim());
+          const title = parts[1] || "بدون عنوان";
+          const poet = parts[3] || "نامشخص";
+          const showNumbering = (parts[4] && parts[4].toLowerCase().includes("yes"));
+          
+          currentPoemKey = title + "_" + i;
+          currentParentKey = currentPoemKey; // This is now the parent for any ##titles
+
+          poems[currentPoemKey] = { 
+            title, poet, verses: [], showNumbering, 
+            style: isNewStyle ? 'new' : 'old',
+            isSub: false,
+            parentId: null
+          };
+          i++;
+        } 
+        // Level 2: Sub Metadata
+        else if (line.startsWith('##')) {
+          const subTitle = line.substring(2).trim();
+          // Inherit poet and settings from the current parent
+          const parent = poems[currentParentKey];
+          
+          currentPoemKey = subTitle + "_" + i;
+          poems[currentPoemKey] = { 
+            title: subTitle, 
+            poet: parent ? parent.poet : "نامشخص", 
+            verses: [], 
+            showNumbering: parent ? parent.showNumbering : true, 
+            style: parent ? parent.style : 'old',
+            isSub: true,
+            parentId: currentParentKey
+          };
+          i++;
+        }
+        else if (currentPoemKey) {
+          if (line.startsWith('^')) {
+            const verses = poems[currentPoemKey].verses;
+            if (verses.length > 0) verses[verses.length - 1].comment = line.substring(1).trim();
+            i++;
+          } else {
+            const poem = poems[currentPoemKey];
+            if (poem.style === 'new') {
+              poem.verses.push({ misra1: line, misra2: '', comment: '' });
+              i++;
+            } else {
+              const misra1 = line;
+              let misra2 = ''; i++;
+              if (i < lines.length && lines[i] && !lines[i].startsWith('#') && !lines[i].startsWith('^')) {
+                misra2 = lines[i]; i++;
+              }
+              poem.verses.push({ misra1, misra2, comment: '' });
+            }
+          }
+        } else { i++; }
+      }
+      return poems;
+    }
+
+    async function loadPoems() {
+      const container = document.getElementById('list-display');
+      try {
+        for (const source of sources) {
+          const res = await fetch(source.url);
+          if (res.ok) allData[source.id] = parsePoemFile(await res.text());
+        }
+        refreshDisplay();
+        buildMenu();
+      } catch (e) { container.innerHTML = "خطا در بارگذاری فایل‌ها."; }
+    }
+
+    function buildMenu() {
+      const menuOpts = document.getElementById('menu-options');
+      menuOpts.innerHTML = '';
+      sources.forEach(source => {
+        const opt = document.createElement('div');
+        opt.className = `menu-option ${currentSource === source.id ? 'active' : ''}`;
+        opt.textContent = source.label;
+        opt.onclick = () => selectSource(source.id, source.label);
+        menuOpts.appendChild(opt);
+      });
+    }
+
+    function toggleView() { // Now opens the menu
+      document.getElementById('menu-overlay').style.display = 'flex';
+    }
+
+    function closeMenu() {
+      document.getElementById('menu-overlay').style.display = 'none';
+    }
+
+    function selectSource(id, label) {
+      currentSource = id;
+      document.getElementById('h1-title').textContent = label;
+      document.getElementById('search-input').value = '';
+      closeMenu();
+      buildMenu();
+      refreshDisplay();
+    }
+
+    function refreshDisplay() {
+      const targetData = allData[currentSource] || {};
+      const keys = Object.keys(targetData);
+      updateStats(keys.length, keys.length, false);
+      
+      // Map keys to data and pass to renderer
+      const results = keys.map(k => ({
+        type: 'poem',
+        id: k,
+        title: targetData[k].title,
+        poet: targetData[k].poet,
+        isSub: targetData[k].isSub
+      }));
+      renderList(results);
+    }
+
+    function renderList(results, highlightQuery = null) {
+      currentActiveList = results;
+      currentSearchHighlight = highlightQuery;
+      const container = document.getElementById('list-display');
+      container.innerHTML = '';
+      
+      if (results.length === 0) {
+        container.innerHTML = '<div class="status-msg">نتیجه‌ای یافت نشد</div>';
+        return;
+      }
+
+      results.forEach((item, index) => {
+        const div = document.createElement('div');
+        // Apply sub-level class if it's a ##title
+        div.className = `list-item ${item.isSub ? 'sub-level' : ''}`;
+        
+        const pNum = `<span class="list-num">${toPersianDigits(index + 1)}.</span> `;
+        const subChar = item.isSub ? '<span class="sub-indicator">↳</span> ' : '';
+        
+        let titleHtml = item.title.replace(/[—\-](.*)/, '<span class="muted-part">-$1</span>');
+
+        if (item.type === 'verse' && highlightQuery) {
+          div.innerHTML = `<div><span>${pNum}${subChar}${highlightText(item.m1, highlightQuery)} ${item.m2 ? '... ' + highlightText(item.m2, highlightQuery) : ''}</span><br><small>${item.poet} - ${item.title}</small></div>`;
+        } else {
+          div.innerHTML = `<span>${pNum}${subChar}${titleHtml}</span><small>${item.poet}</small>`;
+        }
+        
+        div.onclick = () => showPoem(index);
+        container.appendChild(div);
+      });
+    }
+
+    function performSearch() {
+      const query = document.getElementById('search-input').value.trim();
+      document.getElementById('clear-search').style.display = query ? 'flex' : 'none';
+      const targetData = allData[currentSource];
+      const keys = Object.keys(targetData);
+      if (!query) { refreshDisplay(); return; }
+
+      let results = [];
+      const normQuery = normalizeText(query);
+      if (/[+،]/.test(query)) {
+        const words = normQuery.split(/[+،]/).map(w => w.trim()).filter(w => w);
+        results = keys.filter(k => {
+          const p = targetData[k];
+          const content = normalizeText(p.title + p.poet + p.verses.map(v => v.misra1 + v.misra2).join(" "));
+          return words.every(w => content.includes(w));
+        }).map(k => ({ type: 'poem', id: k, title: targetData[k].title, poet: targetData[k].poet }));
+      } else {
+        keys.forEach(k => {
+          targetData[k].verses.forEach(v => {
+            if (normalizeText(v.misra1).includes(normQuery) || normalizeText(v.misra2).includes(normQuery)) {
+              results.push({ type: 'verse', id: k, title: targetData[k].title, poet: targetData[k].poet, m1: v.misra1, m2: v.misra2 });
+            }
+          });
+        });
+      }
+      updateStats(results.length, keys.length, true);
+      renderList(results, query);
+    }
+
+    function showPoem(index) {
+      currentPoemIndex = index;
+      const item = currentActiveList[index];
+      const poemData = allData[currentSource][item.id];
+      
+      document.getElementById('list-display').style.display = 'none';
+      document.getElementById('search-container').style.display = 'none';
+      document.getElementById('main-header').style.display = 'none';
+      document.getElementById('poem-container').style.display = 'block';
+      document.getElementById('nav-row').style.display = 'block';
+      
+      document.getElementById('prev-btn').disabled = index <= 0;
+      document.getElementById('next-btn').disabled = index >= currentActiveList.length - 1;
+
+      const poetHeader = document.getElementById('poet-info');
+      poetHeader.textContent = `${poemData.poet}: ${poemData.title}`;
+      
+      const display = document.getElementById('poems-display');
+      display.innerHTML = '';
+
+      poemData.verses.forEach((v, idx) => {
+        const row = document.createElement('div');
+        row.className = 'verse-row';
+        const num = document.createElement('div');
+        num.className = 'verse-num';
+        num.textContent = poemData.showNumbering ? toPersianDigits(idx + 1) : '•';
+        
+        const content = document.createElement('div');
+        content.className = 'verse-content';
+        const m1 = currentSearchHighlight ? highlightText(v.misra1, currentSearchHighlight) : v.misra1;
+        const m2 = (v.misra2 && currentSearchHighlight) ? highlightText(v.misra2, currentSearchHighlight) : v.misra2;
+        content.innerHTML = v.misra2 ? `<span>${m1}</span><span>${m2}</span>` : `<span>${m1}</span>`;
+        
+        row.appendChild(num);
+        row.appendChild(content);
+        display.appendChild(row);
+
+        if (v.comment) {
+          const com = document.createElement('div');
+          com.className = 'comment';
+          com.innerHTML = v.comment.replace(/\*/g, '<br><span style="color: var(--comment-star);">*</span>'); 
+          com.style.display = 'none';
+          display.appendChild(com);
+          content.onclick = () => com.style.display = com.style.display === 'none' ? 'block' : 'none';
+        }
+      });
+      window.scrollTo(0,0);
+    }
+
+    function clearSearch() { document.getElementById('search-input').value = ''; performSearch(); }
+    function goBack() { 
+      document.getElementById('list-display').style.display = 'block';
+      document.getElementById('poem-container').style.display = 'none';
+      document.getElementById('search-container').style.display = 'block';
+      document.getElementById('main-header').style.display = 'flex';
+      document.getElementById('nav-row').style.display = 'none';
+    }
+    function navPoem(dir) { const n = currentPoemIndex + dir; if (n >= 0 && n < currentActiveList.length) showPoem(n); }
+    
+    window.onload = loadPoems;
+
+  </script>
+
+
+
+
+</body>
+</html>
