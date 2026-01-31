@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>مجموعه شعر</title>
+  <title>خواندنی‌ها</title>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
   <style>
     :root {
@@ -172,7 +172,7 @@
       font-size: 0.75rem;
       color: var(--text-muted);
       min-width: 15px;
-      padding-top: 10px;
+      padding-top: 5px;
       text-align: center;
       cursor: pointer;
       user-select: none;
@@ -233,7 +233,7 @@
 
     #prev-btn { left: 20px; }
     #next-btn { right: 20px; }
-    #back-btn { left: 50%; transform: translateX(-50%); }
+    #back-btn { left: 50%; transform: translateX(-50%); background-color: rgb(80, 0, 120);}
 
     .nav-circle-btn:disabled {
       background-color: var(--border);
@@ -330,7 +330,7 @@
     .sub-indicator {
       color: var(--accent);
       margin-left: 8px;
-      font-weight: bold;
+      font-weight: normal;
     }
 
 
@@ -356,7 +356,7 @@
     </button>
 
     <div class="header-row" id="main-header">
-      <h1 id="h1-title">دیوان اشعار</h1>
+      <h1 id="h1-title">شعر شاعران</h1>
       <div id="stats-display"></div>
     </div>
     
@@ -400,7 +400,6 @@
 
   <div id="menu-overlay" onclick="closeMenu()">
     <div class="menu-card" onclick="event.stopPropagation()">
-      <h2>انتخاب کتاب</h2>
       <div id="menu-options"></div>
     </div>
   </div>
@@ -420,9 +419,11 @@
 
     // Define your files here
     const sources = [
-      { id: 'main', label: 'دیوان اشعار', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems-2.txt' },
-      { id: 'personal', label: 'اشعار من', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Koohsari-2.txt' },
-      { id: 'gilgamesh', label: 'گیلگمش', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Gilgamesh-2.txt' }
+      { id: 'main', label: 'شعر شاعران', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems-2.txt' },
+      { id: 'personal', label: 'نوشته‌های من', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Koohsari-2.txt' },
+      { id: 'gilgamesh', label: 'گیلگمش', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Gilgamesh-2.txt' },
+      { id: 'perInscript', label: 'کتیبه‌های فارسی', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/PersianInscriptions-2.txt' }
+    
     ];
 
     function toPersianDigits(n) {
@@ -448,7 +449,7 @@
 
     function updateStats(currentCount, totalCount, isSearch) {
       const stats = document.getElementById('stats-display');
-      stats.textContent = isSearch ? `${toPersianDigits(currentCount)} از ${toPersianDigits(totalCount)}` : `${toPersianDigits(totalCount)} شعر`;
+      stats.textContent = isSearch ? `${toPersianDigits(currentCount)} از ${toPersianDigits(totalCount)}` : `${toPersianDigits(totalCount)} مورد`;
     }
 
     function parsePoemFile(text) {
@@ -602,9 +603,9 @@
         let titleHtml = item.title.replace(/[—\-](.*)/, '<span class="muted-part">-$1</span>');
 
         if (item.type === 'verse' && highlightQuery) {
-          div.innerHTML = `<div><span>${pNum}${subChar}${highlightText(item.m1, highlightQuery)} ${item.m2 ? '... ' + highlightText(item.m2, highlightQuery) : ''}</span><br><small>${item.poet} - ${item.title}</small></div>`;
+          div.innerHTML = `<div><span>${pNum}${highlightText(item.m1, highlightQuery)} ${item.m2 ? '... ' + highlightText(item.m2, highlightQuery) : ''}</span><br><small>${item.poet} - ${item.title}</small></div>`;
         } else {
-          div.innerHTML = `<span>${pNum}${subChar}${titleHtml}</span><small>${item.poet}</small>`;
+          div.innerHTML = `<span>${pNum}${titleHtml}</span><small>${item.poet}</small>`;
         }
         
         div.onclick = () => showPoem(index);
