@@ -1,7 +1,6 @@
 #PoemNew, لوح اول, بابلی قدیم, بابلی قدیم,no
 <div style="font-family: inherit; color: var(--text-main); line-height: 1.8; text-align: justify; padding: 10px;">
   <div style="margin-bottom: 30px; text-align: center;">
-    <h2 style="margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--accent);">بابلی قدیم - لوح اول</h2>
     <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">...شرح داستان و لوح‌ها...</div>
   </div>
   <div style="margin-bottom: 25px;">
@@ -2442,6 +2441,7 @@
 روح او در جان زیرین آرامش نمی‌یابد».
 «آن‌را که از روحش هیچ‌کس مواظبت نمی‌کند دیده‌ای؟» «(او را) دیده‌ام:
 از آب باقیمانده در کوزه (و) از نان به‌دور انداخته در خیابان می‌خورد».
+
 
 
 
