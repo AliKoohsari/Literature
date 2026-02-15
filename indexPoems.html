@@ -19,7 +19,6 @@
       --comment-star: #d97706;
       --toast-bg: rgba(0, 0, 0, 0.75);
       --toast-text: #ffffff;
-      --has-comment: #d97706;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -36,7 +35,6 @@
         --comment-star: #ffdb4d;
         --toast-bg: rgba(255, 255, 255, 0.85);
         --toast-text: #000000;
-        --has-comment: #ffdb4d;
       }
     }
 
@@ -209,9 +207,10 @@
       border-radius: 4px;
     }
 
+    /* اضافه شدن زیرخط برای شماره‌های دارای کامنت */
     .verse-num.has-comment {
-      color: var(--has-comment);
-      font-weight: bold;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .verse-num:active {
@@ -685,7 +684,7 @@
         
         const num = document.createElement('div');
         num.className = 'verse-num';
-        // اضافه کردن کلاس قرمز در صورت وجود کامنت
+        // اضافه کردن کلاس زیرخط در صورت وجود کامنت
         if (v.comment) num.classList.add('has-comment');
         
         num.textContent = poemData.showNumbering ? toPersianDigits(idx + 1) : '•';
