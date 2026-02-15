@@ -1,19 +1,75 @@
 #PoemNew, لوح اول, بابلی قدیم, بابلی قدیم,no
-...شرح داستان و لوح‌ها...
-۱. خط میخی (Cuneiform)؛ ابزار نوشتن: اول از همه، خط میخی زبان نیست؛ بلکه یک سیستم نوشتاری است (مثل خط فارسی یا لاتین). این خط توسط سومری‌ها اختراع شد و بعداً اقوام دیگر مثل اکدی‌ها، بابلی‌ها، آشوری‌ها و حتی هیتی‌ها از آن برای نوشتن زبان خودشان استفاده کردند.
-۲. زبان اکدی (Akkadian)؛ ریشه اصلی: اکدی نام مادرِ تمام آن زبان‌هایی است که نام برده شد. اکدی یک زبان سامی (مثل عربی و عبری) است. با گذشت زمان و گسترش تمدن، این زبان به دو شاخه یا گویش اصلی تقسیم شد:گویش بابلی: در جنوب بین‌النهرین (بابل).گویش آشوری: در شمال بین‌النهرین (آشور).
-۳. بررسی نسخه‌های گیلگمش (به ترتیب قدمت):
-نسخه / دوره	‌زبان و گویش	قدمت تقریبی	توضیحات
-نسخه‌های سومری، سومری (غیر اکدی)، حدود ۲۱۰۰ پ.م، منظومه‌های پراکنده و قدیمی‌ترین ریشه داستان.
-بابلی کهن (OB)، اکدی (گویش بابلی کهن)، حدود ۱۸۰۰ پ.م، قدیمی‌ترین نسخه منسجم؛ زبانی بسیار ادیبانه و کهن.
-نسخه هیتی، زبان هیتی (هندو-اروپایی)، حدود ۱۴۰۰ پ.م، ترجمه داستان به زبان مردم آناتولی (ترکیه فعلی).
-نسخه استاندارد آشوری، اکدی (گویش بابلی استاندارد)، حدود ۷۰۰ پ.م، مشهورترین نسخه که در کتابخانه "آشوربانی‌پال" پیدا شد.
-۴. چطور با هم ارتباط دارند؟ داستان گیلگمش در طول ۲۰۰۰ سال تکامل یافت:
-ابتدا: سومری‌ها داستان‌های کوتاهی درباره او نوشتند.
-سپس: در دوره بابلی کهن، یک شاعر ناشناس این داستان‌ها را به زبان اکدی (گویش بابلی) به هم بافت و یک حماسه واحد ساخت.
-بعد: این داستان به کشورهای دیگر مثل آشور و حتی تمدن هیتی (در ترکیه امروزی) صادر شد. هیتی‌ها داستان را به زبان خودشان ترجمه کردند.
-در نهایت: نسخه "استاندارد" که امروز بیشتر ترجمه‌ها از روی آن است، نسخه‌ای است که در نینوا (پایتخت آشور) پیدا شده، اما به زبان اکدی با لهجه بابلی فاخر (بابلی استاندارد) نوشته شده است.
-نکته کلیدی: اگر بخواهیم از نظر زمانی مرتب کنیم، سومری قدیمی‌ترین است، بعد بابلی کهن، سپس هیتی و در آخر نسخه آشوری (که کامل‌ترین است).
+<div style="font-family: inherit; line-height: 1.8; text-align: justify; padding: 5px;">
+  
+  <h2 style="color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: 5px; margin-bottom: 15px;">بابلی قدیم - لوح اول</h2>
+
+  <p style="color: var(--text-muted); font-style: italic; margin-bottom: 20px;">... شرح داستان و لوح‌ها ...</p>
+
+  <div style="margin-bottom: 20px;">
+    <strong style="color: var(--accent);">۱. خط میخی (Cuneiform)؛ ابزار نوشتن:</strong>
+    <p style="margin-top: 5px;">اول از همه، خط میخی زبان نیست؛ بلکه یک سیستم نوشتاری است (مثل خط فارسی یا لاتین). این خط توسط سومری‌ها اختراع شد و بعداً اقوام دیگر مثل اکدی‌ها، بابلی‌ها، آشوری‌ها و حتی هیتی‌ها از آن برای نوشتن زبان خودشان استفاده کردند.</p>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <strong style="color: var(--accent);">۲. زبان اکدی (Akkadian)؛ ریشه اصلی:</strong>
+    <p style="margin-top: 5px;">اکدی نام مادرِ تمام آن زبان‌هایی است که نام برده شد. اکدی یک زبان سامی (مثل عربی و عبری) است. با گذشت زمان و گسترش تمدن، این زبان به دو شاخه تقسیم شد:</p>
+    <ul style="padding-right: 20px; list-style-type: circle;">
+      <li><strong>گویش بابلی:</strong> در جنوب بین‌النهرین (بابل).</li>
+      <li><strong>گویش آشوری:</strong> در شمال بین‌النهرین (آشور).</li>
+    </ul>
+  </div>
+
+  <strong style="color: var(--accent); display: block; margin-bottom: 10px;">۳. بررسی نسخه‌های گیلگمش (به ترتیب قدمت):</strong>
+  <div style="overflow-x: auto; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px;">
+    <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 400px;">
+      <thead style="background: var(--item-hover);">
+        <tr>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">نسخه / دوره</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">زبان و گویش</th>
+          <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">توضیحات</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">نسخه‌های سومری</td>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">سومری (غیر اکدی)</td>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">حدود ۲۱۰۰ پ.م؛ قدیمی‌ترین ریشه داستان.</td>
+        </tr>
+        <tr style="background: rgba(0,0,0,0.02);">
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">بابلی کهن (OB)</td>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">اکدی (بابلی کهن)</td>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">حدود ۱۸۰۰ پ.م؛ قدیمی‌ترین نسخه منسجم.</td>
+        </tr>
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">نسخه هیتی</td>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">زبان هیتی</td>
+          <td style="padding: 10px; border-bottom: 1px solid var(--border);">حدود ۱۴۰۰ پ.م؛ ترجمه به زبان آناتولی.</td>
+        </tr>
+        <tr style="background: rgba(0,0,0,0.02);">
+          <td style="padding: 10px;">نسخه استاندارد</td>
+          <td style="padding: 10px;">اکدی (بابلی استاندارد)</td>
+          <td style="padding: 10px;">حدود ۷۰۰ پ.م؛ مشهورترین نسخه (کتابخانه آشوربانی‌پال).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-bottom: 20px;">
+    <strong style="color: var(--accent);">۴. چطور با هم ارتباط دارند؟</strong>
+    <p>داستان گیلگمش در طول ۲۰۰۰ سال تکامل یافت:</p>
+    <div style="border-right: 3px solid var(--border); padding-right: 15px; margin-right: 5px;">
+      <p>• <strong>ابتدا:</strong> سومری‌ها داستان‌های کوتاهی درباره او نوشتند.</p>
+      <p>• <strong>سپس:</strong> در دوره بابلی کهن، یک شاعر ناشناس این داستان‌ها را به صورت یک حماسه واحد درآورد.</p>
+      <p>• <strong>در نهایت:</strong> نسخه "استاندارد" که امروز می‌خوانیم، در نینوا پیدا شده است.</p>
+    </div>
+  </div>
+
+  <div style="background: var(--item-hover); padding: 10px; border-radius: 5px; font-size: 0.9rem;">
+    <span style="color: var(--comment-star);">★</span> <strong>نکته کلیدی:</strong> 
+    سومری قدیمی‌ترین، بابلی کهن اصیل‌ترین، و نسخه آشوری کامل‌ترین نسخه‌ها هستند.
+  </div>
+
+</div>
 
 ##لوح اول- ستون اول
 او که همه چیز را [تا پایان] سرزمین می‌دید
@@ -2403,6 +2459,7 @@
 روح او در جان زیرین آرامش نمی‌یابد».
 «آن‌را که از روحش هیچ‌کس مواظبت نمی‌کند دیده‌ای؟» «(او را) دیده‌ام:
 از آب باقیمانده در کوزه (و) از نان به‌دور انداخته در خیابان می‌خورد».
+
 
 
 
