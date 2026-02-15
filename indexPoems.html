@@ -19,6 +19,7 @@
       --comment-star: #d97706;
       --toast-bg: rgba(0, 0, 0, 0.75);
       --toast-text: #ffffff;
+      --has-comment: #d97706;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -35,6 +36,7 @@
         --comment-star: #ffdb4d;
         --toast-bg: rgba(255, 255, 255, 0.85);
         --toast-text: #000000;
+        --has-comment: #ffdb4d;
       }
     }
 
@@ -205,6 +207,11 @@
       cursor: pointer;
       user-select: none;
       border-radius: 4px;
+    }
+
+    .verse-num.has-comment {
+      color: var(--has-comment);
+      font-weight: bold;
     }
 
     .verse-num:active {
@@ -664,7 +671,6 @@
       const poetInfo = document.getElementById('poet-info');
       poetInfo.textContent = `${poemData.poet}: ${poemData.title}`;
       
-      // تغییر به Double Tap برای کپی کل شعر
       poetInfo.ondblclick = () => {
         const fullPoemText = poemData.verses.map(v => `${v.misra1}${v.misra2 ? ' | ' + v.misra2 : ''}`).join('\n');
         copyToClipboard(`${poemData.poet} - ${poemData.title}\n\n${fullPoemText}`, "کل متن کپی شد");
@@ -679,9 +685,11 @@
         
         const num = document.createElement('div');
         num.className = 'verse-num';
+        // اضافه کردن کلاس قرمز در صورت وجود کامنت
+        if (v.comment) num.classList.add('has-comment');
+        
         num.textContent = poemData.showNumbering ? toPersianDigits(idx + 1) : '•';
         
-        // کپی بیت با زدن روی شماره
         num.onclick = (e) => {
           e.stopPropagation();
           const textToCopy = v.misra2 ? `${v.misra1} | ${v.misra2}` : v.misra1;
