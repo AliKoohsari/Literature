@@ -1,56 +1,76 @@
 #PoemNew, لوح اول, بابلی قدیم, بابلی قدیم,no
-<div style="font-family: inherit; color: var(--text-main); line-height: 1.8; text-align: justify; padding: 10px;">
-  <div style="margin-bottom: 30px; text-align: center;">
-    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">...شرح داستان و لوح‌ها...</div>
-  </div>
-  <div style="margin-bottom: 25px;">
-    <div style="font-weight: 800; color: var(--accent); margin-bottom: 5px;">۱. خط میخی (Cuneiform)؛ ابزار نوشتن:</div>
-    <p style="margin: 0; font-size: 0.95rem;">اول از همه، خط میخی زبان نیست؛ بلکه یک سیستم نوشتاری است (مثل خط فارسی یا لاتین). این خط توسط سومری‌ها اختراع شد و بعداً اقوام دیگر مثل اکدی‌ها، بابلی‌ها، آشوری‌ها و حتی هیتی‌ها از آن برای نوشتن زبان خودشان استفاده کردند.</p>
-  </div>
-  <div style="margin-bottom: 25px;">
-    <div style="font-weight: 800; color: var(--accent); margin-bottom: 5px;">۲. زبان اکدی (Akkadian)؛ ریشه اصلی:</div>
-    <p style="margin: 0; font-size: 0.95rem;">اکدی نام مادرِ تمام آن زبان‌هایی است که نام برده شد. اکدی یک زبان سامی (مثل عربی و عبری) است. با گذشت زمان و گسترش تمدن، این زبان به دو شاخه یا گویش اصلی تقسیم شد:</p>
-    <div style="margin-top: 8px; padding-right: 15px; font-size: 0.95rem; border-right: 2px solid var(--border);">
-      <div>• <strong>گویش بابلی:</strong> در جنوب بین‌النهرین (بابل).</div>
-      <div>• <strong>گویش آشوری:</strong> در شمال بین‌النهرین (آشور).</div>
+<div class="minimal-article" style="direction: rtl; font-family: 'Vazir', sans-serif; line-height: 1.8; color: var(--text-main); max-width: 700px; margin: 10px auto; padding: 15px; background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);">
+    <style>
+        .minimal-article h3 { font-size: 1.1rem; margin-top: 25px; color: var(--text-main); display: flex; align-items: center; }
+        .minimal-article h3::before { content: ""; width: 4px; height: 18px; background: var(--accent); margin-left: 10px; border-radius: 10px; }
+        .minimal-article p { margin: 12px 0; font-size: 0.95rem; text-align: justify; }
+        .table-wrapper { overflow-x: auto; margin: 20px 0; border-radius: 8px; border: 1px solid var(--border); -webkit-overflow-scrolling: touch; }
+        .minimal-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 500px; }
+        .minimal-table th { background: var(--item-hover); padding: 10px; text-align: right; color: var(--text-muted); border-bottom: 2px solid var(--border); }
+        .minimal-table td { padding: 10px; border-bottom: 1px solid var(--border); }
+        .key-note { background: var(--item-hover); border-right: 4px solid var(--accent); padding: 12px; margin-top: 25px; border-radius: 4px 10px 10px 4px; font-weight: 500; font-size: 0.9rem; }
+        .minimal-article ul { padding-right: 20px; margin: 10px 0; }
+        .minimal-article li { margin-bottom: 8px; font-size: 0.95rem; }
+    </style>
+    <h2 style="font-size: 1.3rem; color: var(--accent); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; text-align: center;">شرح داستان و لوح‌ها</h2>
+    <h3>۱. خط میخی (Cuneiform)؛ ابزار نوشتن</h3>
+    <p>اول از همه، خط میخی زبان نیست؛ بلکه یک سیستم نوشتاری است (مثل خط فارسی یا لاتین). این خط توسط سومری‌ها اختراع شد و بعداً اقوام دیگر مثل اکدی‌ها، بابلی‌ها، آشوری‌ها و حتی هیتی‌ها از آن برای نوشتن زبان خودشان استفاده کردند.</p>
+    <h3>۲. زبان اکدی (Akkadian)؛ ریشه اصلی</h3>
+    <p>اکدی نام مادرِ تمام آن زبان‌هایی است که نام برده شد. اکدی یک زبان سامی (مثل عربی و عبری) است. با گذشت زمان و گسترش تمدن، این زبان به دو شاخه یا گویش اصلی تقسیم شد:</p>
+    <ul>
+        <li><strong>گویش بابلی:</strong> در جنوب بین‌النهرین (بابل).</li>
+        <li><strong>گویش آشوری:</strong> در شمال بین‌النهرین (آشور).</li>
+    </ul>
+    <h3>۳. بررسی نسخه‌های گیلگمش (به ترتیب قدمت)</h3>
+    <div class="table-wrapper">
+        <table class="minimal-table">
+            <thead>
+                <tr>
+                    <th>نسخه / دوره</th>
+                    <th>زبان و گویش</th>
+                    <th>قدمت تقریبی</th>
+                    <th>توضیحات</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>نسخه‌های سومری</strong></td>
+                    <td>سومری (غیر اکدی)</td>
+                    <td>حدود ۲۱۰۰ پ.م</td>
+                    <td>منظومه‌های پراکنده و قدیمی‌ترین ریشه داستان.</td>
+                </tr>
+                <tr>
+                    <td><strong>بابلی کهن (OB)</strong></td>
+                    <td>اکدی (گویش بابلی کهن)</td>
+                    <td>حدود ۱۸۰۰ پ.م</td>
+                    <td>قدیمی‌ترین نسخه منسجم؛ زبانی بسیار ادیبانه و کهن.</td>
+                </tr>
+                <tr>
+                    <td><strong>نسخه هیتی</strong></td>
+                    <td>زبان هیتی (هندو-اروپایی)</td>
+                    <td>حدود ۱۴۰۰ پ.م</td>
+                    <td>ترجمه داستان به زبان مردم آناتولی (ترکیه فعلی).</td>
+                </tr>
+                <tr>
+                    <td><strong>نسخه استاندارد آشوری</strong></td>
+                    <td>اکدی (گویش بابلی استاندارد)</td>
+                    <td>حدود ۷۰۰ پ.م</td>
+                    <td>مشخص‌ترین نسخه که در کتابخانه "آشوربانی‌پال" پیدا شد.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-  </div>
-  <div style="margin-bottom: 25px;">
-    <div style="font-weight: 800; color: var(--accent); margin-bottom: 12px;">۳. بررسی نسخه‌های گیلگمش (به ترتیب قدمت):</div>
-    <div style="display: flex; flex-direction: column; gap: 15px; font-size: 0.9rem;">
-      <div>
-        <span style="color: var(--text-muted);">● نسخه‌های سومری /</span> <strong>سومری (غیر اکدی)</strong> <span style="font-size: 0.8rem;">(حدود ۲۱۰۰ پ.م)</span>
-        <div style="margin-right: 18px; opacity: 0.8;">منظومه‌های پراکنده و قدیمی‌ترین ریشه داستان.</div>
-      </div>
-      <div>
-        <span style="color: var(--text-muted);">● بابلی کهن (OB) /</span> <strong>اکدی (گویش بابلی کهن)</strong> <span style="font-size: 0.8rem;">(حدود ۱۸۰۰ پ.م)</span>
-        <div style="margin-right: 18px; opacity: 0.8;">قدیمی‌ترین نسخه منسجم؛ زبانی بسیار ادیبانه و کهن.</div>
-      </div>
-      <div>
-        <span style="color: var(--text-muted);">● نسخه هیتی /</span> <strong>زبان هیتی</strong> <span style="font-size: 0.8rem;">(حدود ۱۴۰۰ پ.م)</span>
-        <div style="margin-right: 18px; opacity: 0.8;">ترجمه داستان به زبان مردم آناتولی (ترکیه فعلی).</div>
-      </div>
-      <div>
-        <span style="color: var(--text-muted);">● نسخه استاندارد /</span> <strong>اکدی (گویش بابلی استاندارد)</strong> <span style="font-size: 0.8rem;">(حدود ۷۰۰ پ.م)</span>
-        <div style="margin-right: 18px; opacity: 0.8;">مشهورترین نسخه که در کتابخانه "آشوربانی‌پال" پیدا شد.</div>
-      </div>
+    <h3>۴. چطور با هم ارتباط دارند؟</h3>
+    <p>داستان گیلگمش در طول ۲۰۰۰ سال تکامل یافت:</p>
+    <ul>
+        <li><strong>ابتدا:</strong> سومری‌ها داستان‌های کوتاهی درباره او نوشتند.</li>
+        <li><strong>سپس:</strong> در دوره بابلی کهن، یک شاعر ناشناس این داستان‌ها را به زبان اکدی (گویش بابلی) به هم بافت و یک حماسه واحد ساخت.</li>
+        <li><strong>بعد:</strong> این داستان به کشورهای دیگر مثل آشور و حتی تمدن هیتی (در ترکیه امروزی) صادر شد. هیتی‌ها داستان را به زبان خودشان ترجمه کردند.</li>
+        <li><strong>در نهایت:</strong> نسخه "استاندارد" که امروز بیشتر ترجمه‌ها از روی آن است، نسخه‌ای است که در نینوا (پایتخت آشور) پیدا شده، اما به زبان اکدی با لهجه بابلی فاخر (بابلی استاندارد) نوشته شده است.</li>
+    </ul>
+    <div class="key-note">
+        <strong>نکته کلیدی:</strong> اگر بخواهیم از نظر زمانی مرتب کنیم، سومری قدیمی‌ترین است، بعد بابلی کهن، سپس هیتی و در آخر نسخه آشوری (که کامل‌ترین است).
     </div>
-  </div>
-  <div style="margin-bottom: 25px;">
-    <div style="font-weight: 800; color: var(--accent); margin-bottom: 8px;">۴. چطور با هم ارتباط دارند؟</div>
-    <div style="font-size: 0.95rem;">
-      داستان گیلگمش در طول ۲۰۰۰ سال تکامل یافت:
-      <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
-        <div><strong style="color: var(--text-muted);">ابتدا:</strong> سومری‌ها داستان‌های کوتاهی درباره او نوشتند.</div>
-        <div><strong style="color: var(--text-muted);">سپس:</strong> در دوره بابلی کهن، یک شاعر ناشناس این داستان‌ها را به زبان اکدی (گویش بابلی) به هم بافت و یک حماسه واحد ساخت.</div>
-        <div><strong style="color: var(--text-muted);">بعد:</strong> این داستان به کشورهای دیگر صادر شد. هیتی‌ها داستان را به زبان خودشان ترجمه کردند.</div>
-        <div><strong style="color: var(--text-muted);">در نهایت:</strong> نسخه "استاندارد" که در نینوا پیدا شده، به زبان اکدی با لهجه بابلی فاخر نوشته شده است.</div>
-      </div>
-    </div>
-  </div>
-  <div style="margin-top: 30px; padding: 15px; background: var(--item-hover); border-radius: 10px; font-size: 0.9rem;">
-    <strong>نکته کلیدی:</strong> اگر بخواهیم از نظر زمانی مرتب کنیم، سومری قدیمی‌ترین است، بعد بابلی کهن، سپس هیتی و در آخر نسخه آشوری (که کامل‌ترین است).
-  </div>
 </div>
 
 ##لوح اول- ستون اول
@@ -2441,6 +2461,7 @@
 روح او در جان زیرین آرامش نمی‌یابد».
 «آن‌را که از روحش هیچ‌کس مواظبت نمی‌کند دیده‌ای؟» «(او را) دیده‌ام:
 از آب باقیمانده در کوزه (و) از نان به‌دور انداخته در خیابان می‌خورد».
+
 
 
 
