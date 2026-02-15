@@ -17,6 +17,8 @@
       --highlight-bg: #ffdb4d;
       --number-color: #86868b;
       --comment-star: #d97706;
+      --toast-bg: rgba(0, 0, 0, 0.75);
+      --toast-text: #ffffff;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -31,7 +33,26 @@
         --highlight-bg: #ffd300;
         --number-color: #a1a1a6;
         --comment-star: #ffdb4d;
+        --toast-bg: rgba(255, 255, 255, 0.85);
+        --toast-text: #000000;
       }
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--toast-bg);
+      color: var(--toast-text);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
     }
 
     mark {
@@ -50,12 +71,14 @@
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app-container {
       width: 100%;
       max-width: 700px;
       padding: 5px 5px;
+      position: relative;
     }
 
     .header-row {
@@ -131,15 +154,18 @@
     .list-item span { font-size: 0.85rem; line-height: 1.6; }
     .list-item small { font-size: 0.70rem; color: var(--text-muted); }
 
+    .tree-container { display: none; margin-right: 0; }
+    .tree-toggle-icon { font-size: 10px; margin-left: 8px; color: var(--accent); transition: transform 0.2s; display: inline-block; width: 12px; text-align: center; }
+    
+    .sub-item { padding-right: 20px !important; border-right: 1px solid var(--border); margin-right: 5px; }
+
     .list-num {
       color: var(--number-color);
       font-weight: 500;
       margin-left: 4px;
     }
 
-    .muted-part {
-      color: var(--text-muted);
-    }
+    .muted-part { color: var(--text-muted); }
 
     #poem-container {
       background: var(--card-bg);
@@ -156,8 +182,9 @@
       margin-bottom: 20px;
       text-align: center;
       cursor: pointer;
-      padding: 5px;
+      padding: 10px;
       position: relative;
+      user-select: none;
     }
 
     .verse-row {
@@ -166,16 +193,27 @@
       gap: 5px;
       padding: 10px 0;
       position: relative;
+      user-select: none;
     }
 
     .verse-num {
       font-size: 0.75rem;
       color: var(--text-muted);
-      min-width: 15px;
-      padding-top: 5px;
+      min-width: 25px;
+      padding: 5px 2px;
       text-align: center;
       cursor: pointer;
       user-select: none;
+      border-radius: 4px;
+    }
+
+    .verse-num.has-comment {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .verse-num:active {
+      background: var(--item-hover);
     }
 
     .verse-content {
@@ -198,6 +236,13 @@
       color: var(--text-muted);
       padding: 2px 20px 10px 0;
       margin-top: -8px;
+    }
+
+    /* استایل اختصاصی برای بلوک‌های HTML */
+    .html-raw-content {
+      width: 100%;
+      padding: 5px 10px;
+      box-sizing: border-box;
     }
 
     .nav-container {
@@ -257,25 +302,7 @@
       z-index: 10;
       transition: color 0.2s;
     }
-    
-    #float-menu-btn:hover { color: var(--accent); }
 
-    .copy-toast {
-      position: absolute;
-      right: 50%;
-      transform: translateX(50%);
-      top: -20px;
-      background: var(--accent);
-      color: white;
-      font-size: 0.6rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      animation: fadeOut 1s forwards;
-      white-space: nowrap;
-      z-index: 10;
-    }
-
-        /* New Menu Overlay Styles */
     #menu-overlay {
       position: fixed;
       top: 0;
@@ -299,13 +326,6 @@
       border: 1px solid var(--border);
     }
 
-    .menu-card h2 {
-      font-size: 1.1rem;
-      text-align: center;
-      margin-top: 0;
-      color: var(--accent);
-    }
-
     .menu-option {
       padding: 15px;
       text-align: center;
@@ -318,25 +338,6 @@
     .menu-option:hover { background: var(--item-hover); }
     .menu-option.active { color: var(--accent); font-weight: 700; }
 
-
-    .list-item.sub-level {
-      padding-right: 25px; /* Indent for RTL */
-      background: var(--bg-color);
-      border-right: 2px solid var(--accent);
-      margin-top: -2px;
-      margin-bottom: 2px;
-    }
-    
-    .sub-indicator {
-      color: var(--accent);
-      margin-left: 8px;
-      font-weight: normal;
-    }
-
-
-    @keyframes fadeOut { 0% {opacity:1;} 80% {opacity:1;} 100% {opacity:0;} }
-    .status-msg { text-align: center; color: var(--text-muted); padding: 15px; font-size: 0.85rem; }
-
     @media (max-width: 600px) {
       .verse-content { flex-direction: column; gap: 2px; }
       .verse-content span { text-align: right !important; }
@@ -346,7 +347,9 @@
 </head>
 <body>
 
-  <div class="app-container" style="position: relative;">
+  <div id="toast"></div>
+
+  <div class="app-container">
     <button id="float-menu-btn" onclick="toggleView()" aria-label="منو">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -378,22 +381,17 @@
   <div id="nav-row" class="nav-container">
     <button id="prev-btn" class="nav-circle-btn" onclick="navPoem(-1)" aria-label="قبلی">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="19" x2="12" y2="5"></line>
-        <polyline points="5 12 12 5 19 12"></polyline>
+        <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
     </button>
-
     <button id="back-btn" class="nav-circle-btn" onclick="goBack()" aria-label="بازگشت">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="19" y1="12" x2="5" y2="12"></line>
-        <polyline points="12 19 5 12 12 5"></polyline>
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
       </svg>
     </button>
-
     <button id="next-btn" class="nav-circle-btn" onclick="navPoem(1)" aria-label="بعدی">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <polyline points="19 12 12 19 5 12"></polyline>
+        <polyline points="9 18 15 12 9 6"></polyline>
       </svg>
     </button>
   </div>
@@ -404,100 +402,95 @@
     </div>
   </div>
 
-
-
-
-
-
-
   <script>
-    let allData = {}; // Stores poems for each source
+    let allData = {};
     let currentSource = 'main'; 
     let currentActiveList = []; 
     let currentPoemIndex = -1;
     let currentSearchHighlight = null;
 
-    // Define your files here
     const sources = [
       { id: 'main', label: 'شعر شاعران', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Poems-2.txt' },
       { id: 'personal', label: 'نوشته‌های من', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Koohsari-2.txt' },
       { id: 'gilgamesh', label: 'گیلگمش', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/Gilgamesh-2.txt' },
       { id: 'perInscript', label: 'کتیبه‌های فارسی', url: 'https://raw.githubusercontent.com/AliKoohsari/Literature/main/PersianInscriptions-2.txt' }
-    
     ];
 
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.opacity = '1';
+      setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+    }
+
     function toPersianDigits(n) {
-      const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-      return n.toString().replace(/\d/g, x => farsiDigits[x]);
+      return n.toString().replace(/\d/g, x => '۰۱۲۳۴۵۶۷۸۹'[x]);
     }
 
     function normalizeText(text) {
-      if (!text) return "";
-      return text.replace(/[\u064B-\u065F]/g, "").replace(/آ/g, "ا").replace(/ي/g, "ی").replace(/ئ/g, "ی").replace(/ك/g, "ک").toLowerCase();
+      return (text || "").replace(/[\u064B-\u065F]/g, "").replace(/آ/g, "ا").replace(/ي/g, "ی").replace(/ئ/g, "ی").replace(/ك/g, "ک").toLowerCase();
     }
 
     function highlightText(text, query) {
       if (!query || !text) return text;
       const words = query.split(/[+،]/).map(w => w.trim()).filter(w => w.length > 1);
-      let highlightedText = text;
+      let html = text;
       words.forEach(word => {
         const reg = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-        highlightedText = highlightedText.replace(reg, '<mark>$1</mark>');
+        html = html.replace(reg, '<mark>$1</mark>');
       });
-      return highlightedText;
+      return html;
     }
 
-    function updateStats(currentCount, totalCount, isSearch) {
-      const stats = document.getElementById('stats-display');
-      stats.textContent = isSearch ? `${toPersianDigits(currentCount)} از ${toPersianDigits(totalCount)}` : `${toPersianDigits(totalCount)} مورد`;
+    async function copyToClipboard(text, message) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(message);
+      } catch (err) {
+        const el = document.createElement('textarea');
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        showToast(message);
+      }
     }
 
     function parsePoemFile(text) {
       const lines = text.split('\n').map(line => line.trim());
       let poems = {};
-      let currentParentKey = null; // Tracks the last #PoemOld or #PoemNew
-      let currentPoemKey = null;   // Tracks the specific poem being parsed
+      let currentParentKey = null;
+      let currentPoemKey = null;
       let i = 0;
 
       while (i < lines.length) {
         const line = lines[i];
         if (!line) { i++; continue; }
 
-        // Level 1: Main Metadata
         if (line.startsWith('#PoemOld') || line.startsWith('#PoemNew')) {
           const isNewStyle = line.startsWith('#PoemNew');
           const parts = line.split(',').map(p => p.trim());
-          const title = parts[1] || "بدون عنوان";
-          const poet = parts[3] || "نامشخص";
-          const showNumbering = (parts[4] && parts[4].toLowerCase().includes("yes"));
-          
-          currentPoemKey = title + "_" + i;
-          currentParentKey = currentPoemKey; // This is now the parent for any ##titles
-
+          currentPoemKey = (parts[1] || "بدون عنوان") + "_" + i;
+          currentParentKey = currentPoemKey;
           poems[currentPoemKey] = { 
-            title, poet, verses: [], showNumbering, 
-            style: isNewStyle ? 'new' : 'old',
-            isSub: false,
-            parentId: null
+            title: parts[1] || "بدون عنوان", poet: parts[3] || "نامشخص", verses: [], 
+            showNumbering: (parts[4] && parts[4].toLowerCase().includes("yes")), 
+            style: isNewStyle ? 'new' : 'old', isSub: false, subItems: []
           };
           i++;
         } 
-        // Level 2: Sub Metadata
         else if (line.startsWith('##')) {
           const subTitle = line.substring(2).trim();
-          // Inherit poet and settings from the current parent
+          const subKey = subTitle + "_" + i;
           const parent = poems[currentParentKey];
-          
-          currentPoemKey = subTitle + "_" + i;
-          poems[currentPoemKey] = { 
-            title: subTitle, 
-            poet: parent ? parent.poet : "نامشخص", 
-            verses: [], 
+          poems[subKey] = { 
+            title: subTitle, poet: parent ? parent.poet : "نامشخص", verses: [], 
             showNumbering: parent ? parent.showNumbering : true, 
-            style: parent ? parent.style : 'old',
-            isSub: true,
-            parentId: currentParentKey
+            style: parent ? parent.style : 'old', isSub: true 
           };
+          if(parent) parent.subItems.push(subKey);
+          currentPoemKey = subKey;
           i++;
         }
         else if (currentPoemKey) {
@@ -507,16 +500,23 @@
             i++;
           } else {
             const poem = poems[currentPoemKey];
-            if (poem.style === 'new') {
-              poem.verses.push({ misra1: line, misra2: '', comment: '' });
+            
+            // اصلاح شده: اگر خط با تگ HTML شروع شود، آن را به عنوان یک واحد کامل در نظر بگیر
+            if (line.startsWith('<')) {
+              poem.verses.push({ misra1: line, misra2: '', comment: '', isHtml: true });
               i++;
-            } else {
+            } 
+            else if (poem.style === 'new') {
+              poem.verses.push({ misra1: line, misra2: '', comment: '', isHtml: false });
+              i++;
+            } 
+            else {
               const misra1 = line;
               let misra2 = ''; i++;
               if (i < lines.length && lines[i] && !lines[i].startsWith('#') && !lines[i].startsWith('^')) {
                 misra2 = lines[i]; i++;
               }
-              poem.verses.push({ misra1, misra2, comment: '' });
+              poem.verses.push({ misra1, misra2, comment: '', isHtml: false });
             }
           }
         } else { i++; }
@@ -525,7 +525,6 @@
     }
 
     async function loadPoems() {
-      const container = document.getElementById('list-display');
       try {
         for (const source of sources) {
           const res = await fetch(source.url);
@@ -533,28 +532,18 @@
         }
         refreshDisplay();
         buildMenu();
-      } catch (e) { container.innerHTML = "خطا در بارگذاری فایل‌ها."; }
+      } catch (e) { document.getElementById('list-display').innerHTML = "خطا در بارگذاری."; }
     }
 
     function buildMenu() {
       const menuOpts = document.getElementById('menu-options');
-      menuOpts.innerHTML = '';
-      sources.forEach(source => {
-        const opt = document.createElement('div');
-        opt.className = `menu-option ${currentSource === source.id ? 'active' : ''}`;
-        opt.textContent = source.label;
-        opt.onclick = () => selectSource(source.id, source.label);
-        menuOpts.appendChild(opt);
-      });
+      menuOpts.innerHTML = sources.map(s => `
+        <div class="menu-option ${currentSource === s.id ? 'active' : ''}" onclick="selectSource('${s.id}', '${s.label}')">${s.label}</div>
+      `).join('');
     }
 
-    function toggleView() { // Now opens the menu
-      document.getElementById('menu-overlay').style.display = 'flex';
-    }
-
-    function closeMenu() {
-      document.getElementById('menu-overlay').style.display = 'none';
-    }
+    function toggleView() { document.getElementById('menu-overlay').style.display = 'flex'; }
+    function closeMenu() { document.getElementById('menu-overlay').style.display = 'none'; }
 
     function selectSource(id, label) {
       currentSource = id;
@@ -567,68 +556,102 @@
 
     function refreshDisplay() {
       const targetData = allData[currentSource] || {};
-      const keys = Object.keys(targetData);
-      updateStats(keys.length, keys.length, false);
+      const mainKeys = Object.keys(targetData).filter(k => !targetData[k].isSub);
+      document.getElementById('stats-display').textContent = `${toPersianDigits(mainKeys.length)} مورد`;
       
-      // Map keys to data and pass to renderer
-      const results = keys.map(k => ({
-        type: 'poem',
-        id: k,
-        title: targetData[k].title,
-        poet: targetData[k].poet,
-        isSub: targetData[k].isSub
-      }));
-      renderList(results);
+      const container = document.getElementById('list-display');
+      container.innerHTML = '';
+      const flatListForNav = [];
+      
+      mainKeys.forEach((key, index) => {
+        const poem = targetData[key];
+        const flatIdx = flatListForNav.length;
+        flatListForNav.push({ type: 'poem', id: key, ...poem });
+
+        if (poem.subItems && poem.subItems.length > 0) {
+          const wrapper = document.createElement('div');
+          const header = document.createElement('div');
+          header.className = 'list-item';
+          header.onclick = () => {
+            const content = wrapper.querySelector('.tree-container');
+            const icon = header.querySelector('.tree-toggle-icon');
+            const isOpen = content.style.display === 'block';
+            content.style.display = isOpen ? 'none' : 'block';
+            icon.style.transform = isOpen ? 'rotate(-90deg)' : 'rotate(0deg)';
+          };
+          header.innerHTML = `<span><span class="tree-toggle-icon">◀</span><span class="list-num">${toPersianDigits(index + 1)}.</span> ${poem.title}</span><small>${poem.poet}</small>`;
+          
+          const treeContent = document.createElement('div');
+          treeContent.className = 'tree-container';
+          
+          if (poem.verses && poem.verses.length > 0) {
+            const fullTextLink = document.createElement('div');
+            fullTextLink.className = 'list-item sub-item';
+            fullTextLink.onclick = (e) => { e.stopPropagation(); showPoem(flatIdx); };
+            fullTextLink.innerHTML = `<span>📖 شرح</span>`;
+            treeContent.appendChild(fullTextLink);
+          }
+
+          poem.subItems.forEach(subKey => {
+            const subPoem = targetData[subKey];
+            const subFlatIdx = flatListForNav.length;
+            flatListForNav.push({ type: 'poem', id: subKey, ...subPoem });
+            
+            const subItem = document.createElement('div');
+            subItem.className = 'list-item sub-item';
+            subItem.onclick = (e) => { e.stopPropagation(); showPoem(subFlatIdx); };
+            subItem.innerHTML = `<span>${subPoem.title}</span>`;
+            treeContent.appendChild(subItem);
+          });
+          
+          wrapper.appendChild(header);
+          wrapper.appendChild(treeContent);
+          container.appendChild(wrapper);
+        } else {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'list-item';
+          itemDiv.onclick = () => showPoem(flatIdx);
+          itemDiv.innerHTML = `<span><span class="tree-toggle-icon" style="visibility:hidden">◀</span><span class="list-num">${toPersianDigits(index + 1)}.</span> ${poem.title}</span><small>${poem.poet}</small>`;
+          container.appendChild(itemDiv);
+        }
+      });
+      currentActiveList = flatListForNav;
     }
 
     function renderList(results, highlightQuery = null) {
       currentActiveList = results;
       currentSearchHighlight = highlightQuery;
       const container = document.getElementById('list-display');
-      container.innerHTML = '';
-      
       if (results.length === 0) {
         container.innerHTML = '<div class="status-msg">نتیجه‌ای یافت نشد</div>';
         return;
       }
-
-      results.forEach((item, index) => {
-        const div = document.createElement('div');
-        // Apply sub-level class if it's a ##title
-        div.className = `list-item ${item.isSub ? 'sub-level' : ''}`;
-        
+      container.innerHTML = results.map((item, index) => {
         const pNum = `<span class="list-num">${toPersianDigits(index + 1)}.</span> `;
-        const subChar = item.isSub ? '<span class="sub-indicator">↳</span> ' : '';
-        
         let titleHtml = item.title.replace(/[—\-](.*)/, '<span class="muted-part">-$1</span>');
-
-        if (item.type === 'verse' && highlightQuery) {
-          div.innerHTML = `<div><span>${pNum}${highlightText(item.m1, highlightQuery)} ${item.m2 ? '... ' + highlightText(item.m2, highlightQuery) : ''}</span><br><small>${item.poet} - ${item.title}</small></div>`;
-        } else {
-          div.innerHTML = `<span>${pNum}${titleHtml}</span><small>${item.poet}</small>`;
-        }
-        
-        div.onclick = () => showPoem(index);
-        container.appendChild(div);
-      });
+        let inner = item.type === 'verse' && highlightQuery 
+          ? `<div><span>${pNum}${highlightText(item.m1, highlightQuery)} ${item.m2 ? '... ' + highlightText(item.m2, highlightQuery) : ''}</span><br><small>${item.poet} - ${item.title}</small></div>`
+          : `<span>${pNum}${titleHtml}</span><small>${item.poet}</small>`;
+        return `<div class="list-item" onclick="showPoem(${index})">${inner}</div>`;
+      }).join('');
     }
 
     function performSearch() {
       const query = document.getElementById('search-input').value.trim();
       document.getElementById('clear-search').style.display = query ? 'flex' : 'none';
       const targetData = allData[currentSource];
-      const keys = Object.keys(targetData);
       if (!query) { refreshDisplay(); return; }
 
       let results = [];
       const normQuery = normalizeText(query);
+      const keys = Object.keys(targetData);
+
       if (/[+،]/.test(query)) {
-        const words = normQuery.split(/[+،]/).map(w => w.trim()).filter(w => w);
+        const words = normQuery.split(/[+،]/).map(w => w.trim()).filter(Boolean);
         results = keys.filter(k => {
-          const p = targetData[k];
-          const content = normalizeText(p.title + p.poet + p.verses.map(v => v.misra1 + v.misra2).join(" "));
+          const content = normalizeText(targetData[k].title + targetData[k].poet + targetData[k].verses.map(v => v.misra1 + v.misra2).join(""));
           return words.every(w => content.includes(w));
-        }).map(k => ({ type: 'poem', id: k, title: targetData[k].title, poet: targetData[k].poet }));
+        }).map(k => ({ type: 'poem', id: k, ...targetData[k] }));
       } else {
         keys.forEach(k => {
           targetData[k].verses.forEach(v => {
@@ -638,7 +661,7 @@
           });
         });
       }
-      updateStats(results.length, keys.length, true);
+      document.getElementById('stats-display').textContent = `${toPersianDigits(results.length)} نتیجه`;
       renderList(results, query);
     }
 
@@ -647,6 +670,7 @@
       const item = currentActiveList[index];
       const poemData = allData[currentSource][item.id];
       
+      document.getElementById('float-menu-btn').style.display = 'none';
       document.getElementById('list-display').style.display = 'none';
       document.getElementById('search-container').style.display = 'none';
       document.getElementById('main-header').style.display = 'none';
@@ -655,58 +679,80 @@
       
       document.getElementById('prev-btn').disabled = index <= 0;
       document.getElementById('next-btn').disabled = index >= currentActiveList.length - 1;
-
-      const poetHeader = document.getElementById('poet-info');
-      poetHeader.textContent = `${poemData.poet}: ${poemData.title}`;
       
+      const poetInfo = document.getElementById('poet-info');
+      poetInfo.textContent = `${poemData.poet}: ${poemData.title}`;
+      
+      poetInfo.ondblclick = () => {
+        const fullPoemText = poemData.verses.map(v => `${v.misra1}${v.misra2 ? ' | ' + v.misra2 : ''}`).join('\n');
+        copyToClipboard(`${poemData.poet} - ${poemData.title}\n\n${fullPoemText}`, "کل متن کپی شد");
+      };
+
       const display = document.getElementById('poems-display');
       display.innerHTML = '';
 
       poemData.verses.forEach((v, idx) => {
-        const row = document.createElement('div');
-        row.className = 'verse-row';
-        const num = document.createElement('div');
-        num.className = 'verse-num';
-        num.textContent = poemData.showNumbering ? toPersianDigits(idx + 1) : '•';
-        
-        const content = document.createElement('div');
-        content.className = 'verse-content';
-        const m1 = currentSearchHighlight ? highlightText(v.misra1, currentSearchHighlight) : v.misra1;
-        const m2 = (v.misra2 && currentSearchHighlight) ? highlightText(v.misra2, currentSearchHighlight) : v.misra2;
-        content.innerHTML = v.misra2 ? `<span>${m1}</span><span>${m2}</span>` : `<span>${m1}</span>`;
-        
-        row.appendChild(num);
-        row.appendChild(content);
-        display.appendChild(row);
+        // بخش جدید: اگر محتوا HTML باشد
+        if (v.isHtml) {
+          const htmlDiv = document.createElement('div');
+          htmlDiv.className = 'html-raw-content';
+          htmlDiv.innerHTML = v.misra1;
+          display.appendChild(htmlDiv);
+        } else {
+          const row = document.createElement('div');
+          row.className = 'verse-row';
+          
+          const num = document.createElement('div');
+          num.className = 'verse-num';
+          if (v.comment) num.classList.add('has-comment');
+          
+          num.textContent = poemData.showNumbering ? toPersianDigits(idx + 1) : '•';
+          
+          num.onclick = (e) => {
+            e.stopPropagation();
+            const textToCopy = v.misra2 ? `${v.misra1} | ${v.misra2}` : v.misra1;
+            copyToClipboard(textToCopy, "بیت کپی شد");
+          };
+          
+          const content = document.createElement('div');
+          content.className = 'verse-content';
+          const m1 = highlightText(v.misra1, currentSearchHighlight);
+          const m2 = v.misra2 ? highlightText(v.misra2, currentSearchHighlight) : '';
+          content.innerHTML = v.misra2 ? `<span>${m1}</span><span>${m2}</span>` : `<span>${m1}</span>`;
+          
+          row.appendChild(num);
+          row.appendChild(content);
+          display.appendChild(row);
 
-        if (v.comment) {
-          const com = document.createElement('div');
-          com.className = 'comment';
-          com.innerHTML = v.comment.replace(/\*/g, '<br><span style="color: var(--comment-star);">*</span>'); 
-          com.style.display = 'none';
-          display.appendChild(com);
-          content.onclick = () => com.style.display = com.style.display === 'none' ? 'block' : 'none';
+          if (v.comment) {
+            const com = document.createElement('div');
+            com.className = 'comment';
+            com.style.display = 'none';
+            com.innerHTML = v.comment.replace(/\*/g, '<br><span style="color: var(--comment-star);">*</span>'); 
+            display.appendChild(com);
+            content.onclick = () => {
+              com.style.display = com.style.display === 'none' ? 'block' : 'none';
+            };
+          }
         }
       });
       window.scrollTo(0,0);
     }
 
     function clearSearch() { document.getElementById('search-input').value = ''; performSearch(); }
+    
     function goBack() { 
+      document.getElementById('float-menu-btn').style.display = 'flex';
       document.getElementById('list-display').style.display = 'block';
       document.getElementById('poem-container').style.display = 'none';
       document.getElementById('search-container').style.display = 'block';
       document.getElementById('main-header').style.display = 'flex';
       document.getElementById('nav-row').style.display = 'none';
     }
+    
     function navPoem(dir) { const n = currentPoemIndex + dir; if (n >= 0 && n < currentActiveList.length) showPoem(n); }
     
     window.onload = loadPoems;
-
   </script>
-
-
-
-
 </body>
 </html>
