@@ -199,11 +199,16 @@
     .verse-num {
       font-size: 0.75rem;
       color: var(--text-muted);
-      min-width: 15px;
-      padding-top: 5px;
+      min-width: 25px;
+      padding: 5px 2px;
       text-align: center;
       cursor: pointer;
       user-select: none;
+      border-radius: 4px;
+    }
+
+    .verse-num:active {
+      background: var(--item-hover);
     }
 
     .verse-content {
@@ -440,15 +445,6 @@
       }
     }
 
-    function setupLongPress(element, callback) {
-      let timer;
-      element.addEventListener('touchstart', () => { timer = setTimeout(callback, 700); });
-      element.addEventListener('touchend', () => { clearTimeout(timer); });
-      element.addEventListener('mousedown', () => { timer = setTimeout(callback, 700); });
-      element.addEventListener('mouseup', () => { clearTimeout(timer); });
-      element.addEventListener('mouseleave', () => { clearTimeout(timer); });
-    }
-
     function parsePoemFile(text) {
       const lines = text.split('\n').map(line => line.trim());
       let poems = {};
@@ -569,7 +565,6 @@
           const treeContent = document.createElement('div');
           treeContent.className = 'tree-container';
           
-          // --- اصلاح شده: فقط اگر محتوایی در سطح Main باشد گزینه شرح نشان داده شود ---
           if (poem.verses && poem.verses.length > 0) {
             const fullTextLink = document.createElement('div');
             fullTextLink.className = 'list-item sub-item';
@@ -669,10 +664,11 @@
       const poetInfo = document.getElementById('poet-info');
       poetInfo.textContent = `${poemData.poet}: ${poemData.title}`;
       
-      setupLongPress(poetInfo, () => {
+      // تغییر به Double Tap برای کپی کل شعر
+      poetInfo.ondblclick = () => {
         const fullPoemText = poemData.verses.map(v => `${v.misra1}${v.misra2 ? ' | ' + v.misra2 : ''}`).join('\n');
         copyToClipboard(`${poemData.poet} - ${poemData.title}\n\n${fullPoemText}`, "کل متن کپی شد");
-      });
+      };
 
       const display = document.getElementById('poems-display');
       display.innerHTML = '';
@@ -680,9 +676,17 @@
       poemData.verses.forEach((v, idx) => {
         const row = document.createElement('div');
         row.className = 'verse-row';
+        
         const num = document.createElement('div');
         num.className = 'verse-num';
         num.textContent = poemData.showNumbering ? toPersianDigits(idx + 1) : '•';
+        
+        // کپی بیت با زدن روی شماره
+        num.onclick = (e) => {
+          e.stopPropagation();
+          const textToCopy = v.misra2 ? `${v.misra1} | ${v.misra2}` : v.misra1;
+          copyToClipboard(textToCopy, "بیت کپی شد");
+        };
         
         const content = document.createElement('div');
         content.className = 'verse-content';
@@ -690,11 +694,6 @@
         const m2 = v.misra2 ? highlightText(v.misra2, currentSearchHighlight) : '';
         content.innerHTML = v.misra2 ? `<span>${m1}</span><span>${m2}</span>` : `<span>${m1}</span>`;
         
-        setupLongPress(content, () => {
-          const textToCopy = v.misra2 ? `${v.misra1} | ${v.misra2}` : v.misra1;
-          copyToClipboard(textToCopy, "بیت کپی شد");
-        });
-
         row.appendChild(num);
         row.appendChild(content);
         display.appendChild(row);
